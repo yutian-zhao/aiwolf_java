@@ -153,18 +153,34 @@ public class BasketBasePlayer implements Player {
 	protected int chooseMostLikelyWerewolf() {
 	//最も人狼らしいプレイヤー
 		int c = -1;
-		double mn = -1e9; //-10^9
-		for (int i = 0; i < numAgents; i++)
-			if (i != meint) //自分じゃないなら
-				if (sh.gamestate.agents[i].Alive) { //生きているなら
-					double score = sh.rp.getProb(i, Util.WEREWOLF) + sh.gamestate.cnt_vote(i) * 0.0001; 
-					//(stateholder -> roleprediction で推定した人狼の可能性) + (そのプレイヤーに投票宣言している人の数 × 0.0001)
-					if (mn < score) { //最大値を取ってくる
-						mn = score;
-						c = i;
+
+		float closest = 100000;
+		float[] prediction = predict(sm, env, session, logger);
+		for (int i=0; i<prediction.length; i++){
+			if ((4.5 <= prediction[i]) && (prediction[i] <=5.5)){
+				if (Math.abs(prediction[i]-5) < closest){
+					c = i;
+					closest = Math.abs(prediction[i]-5);
+				} 
+			}
+		}
+
+		if (c==-1){
+			double mn = -1e9; //-10^9
+			for (int i = 0; i < numAgents; i++)
+				if (i != meint) //自分じゃないなら
+					if (sh.gamestate.agents[i].Alive) { //生きているなら
+						double score = sh.rp.getProb(i, Util.WEREWOLF) + sh.gamestate.cnt_vote(i) * 0.0001; 
+						//(stateholder -> roleprediction で推定した人狼の可能性) + (そのプレイヤーに投票宣言している人の数 × 0.0001)
+						if (mn < score) { //最大値を取ってくる
+							mn = score;
+							c = i;
+						}
 					}
-				}
+			
+		}
 		return c;
+
 	}
 
 	protected int chooseMostLikelyExecuted(double th) { 
@@ -240,7 +256,7 @@ public class BasketBasePlayer implements Player {
 			try {  
 				fh = new FileHandler("debug.log");
 				logger.addHandler(fh);
-				logger.setLevel(Level.FINE);
+				logger.setLevel(Level.FINE); // set to info to hide the log
 				fh.setFormatter(formatter);  
 				logger.fine("===============First time initialize===========");
 			} catch (IOException e) {  
@@ -618,7 +634,7 @@ public class BasketBasePlayer implements Player {
 			sm.preFirstVoteList = new ArrayList<Vote>();
 		}
 		
-		float[] prediction = predict(sm, env, session, logger);
+		// float[] prediction = predict(sm, env, session, logger);
 
 		return chooseVote();
 	}

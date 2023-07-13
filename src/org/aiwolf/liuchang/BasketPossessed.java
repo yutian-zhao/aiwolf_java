@@ -419,10 +419,10 @@ public class BasketPossessed extends BasketBasePlayer {
 		
 		// 各々のAgentに対して人狼の可能性を出力
 		sh2.update();
-		for (int i = 0; i < numAgents; i++) {
-			System.out.print(sh2.rp.getProb(i, Util.WEREWOLF) + " ");
-		}
-		System.out.println();
+		// for (int i = 0; i < numAgents; i++) {
+		// 	System.out.print(sh2.rp.getProb(i, Util.WEREWOLF) + " ");
+		// }
+		// System.out.println();
 
 		// 乱数で方針を選ぶ
 		// 最も人狼っぽい人を探す

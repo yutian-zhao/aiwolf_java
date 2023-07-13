@@ -82,17 +82,17 @@ public class BasketBodyguard extends BasketVillager {
 		double mn = -1;
 		int c = 0;
 
-		for (int i = 0; i < numAgents; i++) {
-			System.out.print(sh.rp.getProb(i, Util.WEREWOLF) + " ");
-		}
-		System.out.println();
+		// for (int i = 0; i < numAgents; i++) {
+		// 	System.out.print(sh.rp.getProb(i, Util.WEREWOLF) + " ");
+		// }
+		// System.out.println();
 		
 		c = chooseMostLikelyExecuted(getAliveAgentsCount() * 0.7);
 		if (c == -1) {
 			c = chooseMostLikelyWerewolf();
 		}
 		
-		System.out.println("willvote " + (c + 1));
+		// System.out.println("willvote " + (c + 1));
 		
 		//3人以上が自分に敵意を見せた場合にhostilityを1にする
 		int hostility = 0;
@@ -147,10 +147,10 @@ public class BasketBodyguard extends BasketVillager {
 		double mn = -1;
 		int c = 0;
 
-		for (int i = 0; i < numAgents; i++) {
-			System.out.print(sh.rp.getProb(i, Util.WEREWOLF) + " ");
-		}
-		System.out.println();
+		// for (int i = 0; i < numAgents; i++) {
+		// 	System.out.print(sh.rp.getProb(i, Util.WEREWOLF) + " ");
+		// }
+		// System.out.println();
 		
 		for (int i = 0; i < numAgents; i++) {
 			

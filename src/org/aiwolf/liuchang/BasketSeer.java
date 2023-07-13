@@ -123,10 +123,10 @@ public class BasketSeer extends BasketBasePlayer {
 
 		int c = 0;
 
-		for (int i = 0; i < numAgents; i++) {
-			System.out.print(sh.rp.getProb(i, Util.WEREWOLF) + " ");
-		}
-		System.out.println();
+		// for (int i = 0; i < numAgents; i++) {
+		// 	System.out.print(sh.rp.getProb(i, Util.WEREWOLF) + " ");
+		// }
+		// System.out.println();
 		c = chooseMostLikelyWerewolf();
 		if (getAliveAgentsCount() <= 3) {
 			if (!pos) {

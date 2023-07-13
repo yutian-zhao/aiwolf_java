@@ -140,10 +140,10 @@ public class BasketMedium extends BasketBasePlayer {
 		double mn = -1;
 		int c = 0;
 
-		// Agentそれぞれに対する、人狼の可能性を出力
-		for (int i = 0; i < numAgents; i++) {
-			System.out.print(sh.rp.getProb(i, Util.WEREWOLF) + " ");
-		}
+		// // Agentそれぞれに対する、人狼の可能性を出力
+		// for (int i = 0; i < numAgents; i++) {
+		// 	System.out.print(sh.rp.getProb(i, Util.WEREWOLF) + " ");
+		// }
 
 		// 一番黒っぽい人の選出
 		c = chooseMostLikelyExecuted(getAliveAgentsCount() * 0.7);

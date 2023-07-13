@@ -1,6 +1,7 @@
 package org.aiwolf.liuchang;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.aiwolf.client.lib.ComingoutContentBuilder;
 import org.aiwolf.client.lib.Content;
@@ -45,6 +46,11 @@ public class BasketVillager extends BasketBasePlayer {
 	}
 
 	protected Agent chooseVote() {
+		float[] prediction = predict(sm, env, session, logger); 
+		logger.fine(Arrays.toString(prediction));
+		logger.fine("~~~~~~~~~~~~~~~~~~~");
+		
+
 		gamedata.add(new GameData(DataType.VOTESTART, day, meint, meint, false));
 
 		sh.process(params, gamedata);
@@ -126,10 +132,10 @@ public class BasketVillager extends BasketBasePlayer {
 		double mn = -1;
 		int c = 0;
 
-		for (int i = 0; i < numAgents; i++) {
-			System.out.print(sh.rp.getProb(i, Util.WEREWOLF) + " ");
-		}
-		System.out.println();
+		// for (int i = 0; i < numAgents; i++) {
+		// 	System.out.print(sh.rp.getProb(i, Util.WEREWOLF) + " ");
+		// }
+		// System.out.println();
 
 		if (numAgents == 5) {
 			if (day == 1 && sh.gamestate.turn == 1) {
