@@ -140,11 +140,12 @@ public class BasketBasePlayer implements Player {
 		if (condition) {
 			int tu = _sh.gamestate.turn - 2; //NOTE: 
 			for (int r = 0; r < rs; r++) { //rsは役職の数
-				for (int i = 0; i < numAgents; i++)
+				for (int i = 0; i < numAgents; i++){
 					if (sh.gamestate.agents[i].Alive) {
 						_sh.scorematrix.scores[i][r][i][r] += Util.nlog(agentScore[day][tu][i][r]);
 						//nlog(a) returns -log(max(0.0001, a))
 					}
+				}	
 			}
 			_sh.update(); //もう一度役職推定をする
 		}
@@ -157,18 +158,21 @@ public class BasketBasePlayer implements Player {
 		float closest = 100000;
 		float[] prediction = predict(sm, env, session, logger);
 		for (int i=0; i<prediction.length; i++){
-			if ((4.5 <= prediction[i]) && (prediction[i] <=5.5)){
-				if (Math.abs(prediction[i]-5) < closest){
-					c = i;
-					closest = Math.abs(prediction[i]-5);
-				} 
+			if (agents[i].alive){
+				if ((4.5 <= prediction[i]) && (prediction[i] <=5.5)){
+					if (Math.abs(prediction[i]-5) < closest){
+						c = i;
+						closest = Math.abs(prediction[i]-5);
+					} 
+				}
 			}
+			
 		}
 
 		if (c==-1){
 			double mn = -1e9; //-10^9
-			for (int i = 0; i < numAgents; i++)
-				if (i != meint) //自分じゃないなら
+			for (int i = 0; i < numAgents; i++){
+				if (i != meint){ //自分じゃないなら
 					if (sh.gamestate.agents[i].Alive) { //生きているなら
 						double score = sh.rp.getProb(i, Util.WEREWOLF) + sh.gamestate.cnt_vote(i) * 0.0001; 
 						//(stateholder -> roleprediction で推定した人狼の可能性) + (そのプレイヤーに投票宣言している人の数 × 0.0001)
@@ -177,7 +181,10 @@ public class BasketBasePlayer implements Player {
 							c = i;
 						}
 					}
-			
+				} 
+			}	
+		} else {
+			logger.fine("~~~~~ estimate werewolf is " + c);
 		}
 		return c;
 
@@ -258,7 +265,7 @@ public class BasketBasePlayer implements Player {
 				logger.addHandler(fh);
 				logger.setLevel(Level.FINE); // set to info to hide the log
 				fh.setFormatter(formatter);  
-				logger.fine("===============First time initialize===========");
+				// logger.fine("===============First time initialize===========");
 			} catch (IOException e) {  
 				e.printStackTrace();  
 			}
@@ -365,7 +372,7 @@ public class BasketBasePlayer implements Player {
 			executedChecked[i] = false;
 		}
 
-		logger.fine("============HOWLS DEBUG: INITIALIZED=============");
+		// logger.fine("============HOWLS DEBUG: INITIALIZED=============");
 
 	}
 
