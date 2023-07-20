@@ -44,7 +44,7 @@ public class BasketBasePlayer implements Player {
 	static FileHandler fh;
 	static SimpleFormatter formatter = new SimpleFormatter();
 	int votingDay;
-	boolean debug_log = false;
+	boolean debugLog = false;
 
 	// これはなんだ？
 	int winCount = 0;
@@ -260,7 +260,7 @@ public class BasketBasePlayer implements Player {
 			
 			try {
 				logger.setLevel(Level.FINE);
-				if (debug_log) {
+				if (debugLog) {
 					fh = new FileHandler("debug.log");
 					logger.addHandler(fh);
 					// set to info to hide the log
@@ -272,8 +272,14 @@ public class BasketBasePlayer implements Player {
 
 			try {
 				URL onnx_path = getClass().getResource("CNNLSTM_0625170355.onnx");
-				logger.fine("ONNX path: "+onnx_path.getPath());
-				session = env.createSession(onnx_path.getPath().substring(1), new OrtSession.SessionOptions());
+				String systemName = System.getProperty("os.name");
+				logger.fine("ONNX path: " + onnx_path.getPath());
+				logger.fine("System: " + systemName);
+				if (systemName.startsWith("Windows")) {
+					session = env.createSession(onnx_path.getPath().substring(1), new OrtSession.SessionOptions());
+				} else {
+					session = env.createSession(onnx_path.getPath(), new OrtSession.SessionOptions());
+				}
 			} catch (OrtException e) {
 				e.printStackTrace();
 			}
