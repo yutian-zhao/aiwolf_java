@@ -272,8 +272,8 @@ public class BasketBasePlayer implements Player {
 
 			try {
 				URL onnx_path = getClass().getResource("CNNLSTM_0625170355.onnx");
-				logger.fine("ONNX path: "+onnx_path.toString());
-				session = env.createSession(onnx_path.toString().substring(6),new OrtSession.SessionOptions());
+				logger.fine("ONNX path: "+onnx_path.getPath());
+				session = env.createSession(onnx_path.getPath().substring(1), new OrtSession.SessionOptions());
 			} catch (OrtException e) {
 				e.printStackTrace();
 			}
