@@ -124,7 +124,7 @@ public class BasketSeer extends BasketBasePlayer {
 		int c = 0;
 
 		// for (int i = 0; i < numAgents; i++) {
-		// 	System.out.print(sh.rp.getProb(i, Util.WEREWOLF) + " ");
+		// 	System.out.print(getPred(i, Util.WEREWOLF) + " ");
 		// }
 		// System.out.println();
 		c = chooseMostLikelyWerewolf();
@@ -134,9 +134,9 @@ public class BasketSeer extends BasketBasePlayer {
 				double all = 0;
 				double alive = 0;
 				for (int i = 0; i < numAgents; i++) {
-					all += sh.rp.getProb(i, Util.POSSESSED);
+					all += getPred(i, Util.POSSESSED);
 					if (sh.gamestate.agents[i].Alive) {
-						alive += sh.rp.getProb(i, Util.POSSESSED);
+						alive += getPred(i, Util.POSSESSED);
 					}
 				}
 				if (alive > 0.5 * all) {
@@ -192,7 +192,7 @@ public class BasketSeer extends BasketBasePlayer {
 			if (i != meint) {
 				if (sh.gamestate.agents[i].Alive) {
 					if (!divined[i]) {
-						double score = sh.rp.getProb(i, Util.WEREWOLF);
+						double score = getPred(i, Util.WEREWOLF);
 						if (mn < score) {
 							mn = score;
 							c = i;

@@ -21,16 +21,7 @@ public class RolePrediction {
 	HashSet<Long> hash = new HashSet<Long>();
 	int role;
 	Random rnd = new Random();
-	// yutian
-	float[][] pred; 
-	Map<String, Integer> roleStringInt = Map.of(
-        "VILLAGER", 1,
-        "SEER", 2,
-        "MEDIUM", 3,
-        "BODYGUARD", 4,
-        "WEREWOLF", 5,
-        "POSSESSED", 6
-    );
+
 
 	RolePrediction() {
 	}
@@ -147,79 +138,74 @@ public class RolePrediction {
 	}
 
 	double getProb(int agent, int role) {
-		role = roleStringInt.get(Util.role_int_to_string[role]);
-		return (double) pred[role][agent];
+		//あるエージェントがある役職である確率を推定して返す
+		//評価の元となるスコアを（多分ScoreMatrixから）持ってきて、0が最大値になるように調整する
+		//調整後のスコアを指数関数に入れて、評価値を計算
+		//最後に各役職の和が1になるように評価値を正規化する
+		if (!updated) {
+			for (int i = 0; i < N; i++) {
+				for (int j = 0; j < M; j++) {
+					prob[i][j] = 0;
+				}
+			}
+			double[] ascore = new double[assignments.size()];
+			double mn = 1e9;
+			if (assignments.size() > 0) {
+				mn = assignments.get(0).score;
+			}
+			for (int i = 0; i < assignments.size(); i++) {
+				mn = Math.max(mn, assignments.get(i).score);
+			}
+
+			for (int i = 0; i < assignments.size(); i++) {
+				ascore[i] = assignments.get(i).score - mn;
+			}
+			for (int i = 0; i < assignments.size(); i++) {
+				for (int j = 0; j < N; j++) {
+					prob[j][assignments.get(i).assignment.get(j)] += Math.exp(-ascore[i]);
+				}
+			}
+			for (int i = 0; i < N; i++) {
+				double sum = 0;
+				for (int j = 0; j < M; j++) {
+					sum += prob[i][j];
+				}
+				if (sum > 0) {
+					for (int j = 0; j < M; j++) {
+						prob[i][j] /= sum;
+					}
+				}
+			}
+			updated = true;
+		}
+		return prob[agent][role];
 	}
 
-	// double getProb(int agent, int role) {
-	// 	//あるエージェントがある役職である確率を推定して返す
-	// 	//評価の元となるスコアを（多分ScoreMatrixから）持ってきて、0が最大値になるように調整する
-	// 	//調整後のスコアを指数関数に入れて、評価値を計算
-	// 	//最後に各役職の和が1になるように評価値を正規化する
-	// 	if (!updated) {
-	// 		for (int i = 0; i < N; i++) {
-	// 			for (int j = 0; j < M; j++) {
-	// 				prob[i][j] = 0;
-	// 			}
-	// 		}
-	// 		double[] ascore = new double[assignments.size()];
-	// 		double mn = 1e9;
-	// 		if (assignments.size() > 0) {
-	// 			mn = assignments.get(0).score;
-	// 		}
-	// 		for (int i = 0; i < assignments.size(); i++) {
-	// 			mn = Math.max(mn, assignments.get(i).score);
-	// 		}
-
-	// 		for (int i = 0; i < assignments.size(); i++) {
-	// 			ascore[i] = assignments.get(i).score - mn;
-	// 		}
-	// 		for (int i = 0; i < assignments.size(); i++) {
-	// 			for (int j = 0; j < N; j++) {
-	// 				prob[j][assignments.get(i).assignment.get(j)] += Math.exp(-ascore[i]);
-	// 			}
-	// 		}
-	// 		for (int i = 0; i < N; i++) {
-	// 			double sum = 0;
-	// 			for (int j = 0; j < M; j++) {
-	// 				sum += prob[i][j];
-	// 			}
-	// 			if (sum > 0) {
-	// 				for (int j = 0; j < M; j++) {
-	// 					prob[i][j] /= sum;
-	// 				}
-	// 			}
-	// 		}
-	// 		updated = true;
+	// double probHuman(int a) {
+	// 	double res = 0;
+	// 	if (N == 5) {
+	// 		res += getProb(a, Util.VILLAGER);
+	// 		res += getProb(a, Util.SEER);
+	// 	} else {
+	// 		res += getProb(a, Util.VILLAGER);
+	// 		res += getProb(a, Util.SEER);
+	// 		res += getProb(a, Util.BODYGUARD);
+	// 		res += getProb(a, Util.MEDIUM);
 	// 	}
-	// 	return prob[agent][role];
+
+	// 	return res;
 	// }
 
-	double probHuman(int a) {
-		double res = 0;
-		if (N == 5) {
-			res += getProb(a, Util.VILLAGER);
-			res += getProb(a, Util.SEER);
-		} else {
-			res += getProb(a, Util.VILLAGER);
-			res += getProb(a, Util.SEER);
-			res += getProb(a, Util.BODYGUARD);
-			res += getProb(a, Util.MEDIUM);
-		}
-
-		return res;
-	}
-
-	int predict(int role) {
-		int res = -1;
-		double mn = -1;
-		getProb(0, 0);
-		for (int i = 0; i < N; i++) {
-			if (mn < prob[i][role]) {
-				mn = prob[i][role];
-				res = i;
-			}
-		}
-		return res;
-	}
+	// int predict(int role) {
+	// 	int res = -1;
+	// 	double mn = -1;
+	// 	getProb(0, 0);
+	// 	for (int i = 0; i < N; i++) {
+	// 		if (mn < prob[i][role]) {
+	// 			mn = prob[i][role];
+	// 			res = i;
+	// 		}
+	// 	}
+	// 	return res;
+	// }
 }

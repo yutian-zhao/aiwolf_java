@@ -128,12 +128,12 @@ public class BasketPossessed extends BasketBasePlayer {
 		//System.out.println("alive = " + currentGameInfo.getAliveAgentList().size());
 
 		for (int i = 0; i < numAgents; i++) {
-			System.out.print(sh.rp.getProb(i, Util.WEREWOLF) + " ");
+			System.out.print(getPred(i, Util.WEREWOLF) + " ");
 		}
 		System.out.println();
 
 		for (int i = 0; i < numAgents; i++) {
-			System.out.print(sh.rp.getProb(i, Util.SEER) + " ");
+			System.out.print(getPred(i, Util.SEER) + " ");
 		}
 		System.out.println();
 
@@ -142,7 +142,7 @@ public class BasketPossessed extends BasketBasePlayer {
 		if (currentGameInfo.getAliveAgentList().size() <= 3) {
 			for (int i = 0; i < numAgents; i++) {
 				if (i != meint && sh.gamestate.agents[i].Alive) {
-					double score = 1 - sh.rp.getProb(i, Util.WEREWOLF);
+					double score = 1 - getPred(i, Util.WEREWOLF);
 					if (mn < score) {
 						mn = score;
 						c = i;
@@ -157,7 +157,7 @@ public class BasketPossessed extends BasketBasePlayer {
 			if (numAgents == 5) {
 				for (int i = 0; i < numAgents; i++) {
 					if (i != meint && sh.gamestate.agents[i].Alive) {
-						double score = sh2.rp.getProb(i, Util.WEREWOLF) - sh.rp.getProb(i, Util.WEREWOLF);
+						double score = getPred(i, Util.WEREWOLF) - getPred(i, Util.WEREWOLF);
 						if (mn < score) {
 							mn = score;
 							c = i;
@@ -169,7 +169,7 @@ public class BasketPossessed extends BasketBasePlayer {
 			else {
 				for (int i = 0; i < numAgents; i++) {
 					if (i != meint && sh.gamestate.agents[i].Alive) {
-						double score = sh.rp.getProb(i, Util.WEREWOLF);
+						double score = getPred(i, Util.WEREWOLF);
 						if (mn < score) {
 							mn = score;
 							c = i;
@@ -182,7 +182,7 @@ public class BasketPossessed extends BasketBasePlayer {
 				if (t == -1) {
 					for (int i = 0; i < numAgents; i++) {
 						if (i != meint && sh.gamestate.agents[i].Alive) {
-							double score = 1 - sh.rp.getProb(i, Util.WEREWOLF);
+							double score = 1 - getPred(i, Util.WEREWOLF);
 							if (mn < score) {
 								mn = score;
 								t = i;
@@ -266,8 +266,8 @@ public class BasketPossessed extends BasketBasePlayer {
 							mn = -1;
 							for (int i = 0; i < numAgents; i++) {
 								if (i != meint && sh.gamestate.agents[i].Alive) {
-									if (!divined[i] && mn < sh.rp.getProb(i, Util.WEREWOLF)) {
-										mn = sh.rp.getProb(i, Util.WEREWOLF);
+									if (!divined[i] && mn < getPred(i, Util.WEREWOLF)) {
+										mn = getPred(i, Util.WEREWOLF);
 										c = i;
 									}
 								}
@@ -287,7 +287,7 @@ public class BasketPossessed extends BasketBasePlayer {
 							for (int i = 0; i < numAgents; i++) {
 								if (i != meint && sh.gamestate.agents[i].Alive) {
 									if (!divined[i]) {
-										double score = 1 - sh.rp.getProb(i, Util.WEREWOLF);
+										double score = 1 - getPred(i, Util.WEREWOLF);
 										if (sh.gamestate.agents[i].corole != -1) {
 											score -= 1.0;
 										}
@@ -311,7 +311,7 @@ public class BasketPossessed extends BasketBasePlayer {
 							for (int i = 0; i < numAgents; i++) {
 								if (i != meint && sh.gamestate.agents[i].Alive) {
 									if (!divined[i]) {
-										double score = sh.rp.getProb(i, Util.WEREWOLF);
+										double score = getPred(i, Util.WEREWOLF);
 										if (sh.gamestate.agents[i].corole != -1) {
 											score -= 1.0;
 										}
@@ -391,7 +391,7 @@ public class BasketPossessed extends BasketBasePlayer {
 					// 最も人狼っぽい人を探す
 					for (int i = 0; i < numAgents; i++) {
 						if (i != meint && sh.gamestate.agents[i].Alive) {
-							double score = sh2.rp.getProb(i, Util.WEREWOLF);
+							double score = getPred(i, Util.WEREWOLF);
 							if (mn < score) {
 								mn = score;
 								c = i;
@@ -420,7 +420,7 @@ public class BasketPossessed extends BasketBasePlayer {
 		// 各々のAgentに対して人狼の可能性を出力
 		sh2.update();
 		// for (int i = 0; i < numAgents; i++) {
-		// 	System.out.print(sh2.rp.getProb(i, Util.WEREWOLF) + " ");
+		// 	System.out.print(getPred(i, Util.WEREWOLF) + " ");
 		// }
 		// System.out.println();
 
@@ -428,7 +428,7 @@ public class BasketPossessed extends BasketBasePlayer {
 		// 最も人狼っぽい人を探す
 		for (int i = 0; i < numAgents; i++) {
 			if (i != meint && sh.gamestate.agents[i].Alive) {
-				double score = sh2.rp.getProb(i, Util.WEREWOLF);
+				double score = getPred(i, Util.WEREWOLF);
 				if (mn < score) {
 					mn = score;
 					c = i;

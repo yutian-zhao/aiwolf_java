@@ -104,8 +104,8 @@ public class BasketMedium extends BasketBasePlayer {
 		for (int i = 0; i < numAgents; i++) {
 			if (i != meint) {
 				if (sh.gamestate.agents[i].Alive) {
-					if (mn < sh.rp.getProb(i, Util.WEREWOLF)) {
-						mn = sh.rp.getProb(i, Util.WEREWOLF);
+					if (mn < getPred(i, Util.WEREWOLF)) {
+						mn = getPred(i, Util.WEREWOLF);
 						c = i;
 					}
 				}
@@ -142,7 +142,7 @@ public class BasketMedium extends BasketBasePlayer {
 
 		// // Agentそれぞれに対する、人狼の可能性を出力
 		// for (int i = 0; i < numAgents; i++) {
-		// 	System.out.print(sh.rp.getProb(i, Util.WEREWOLF) + " ");
+		// 	System.out.print(getPred(i, Util.WEREWOLF) + " ");
 		// }
 
 		// 一番黒っぽい人の選出

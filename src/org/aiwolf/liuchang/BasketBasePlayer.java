@@ -1,6 +1,7 @@
 package org.aiwolf.liuchang;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,6 +46,15 @@ public class BasketBasePlayer implements Player {
 	static SimpleFormatter formatter = new SimpleFormatter();
 	int votingDay;
 	boolean debugLog = false;
+	float[][] onnxPred;
+	Map<String, Integer> roleStringInt = Map.of(
+        "VILLAGER", 1,
+        "SEER", 2,
+        "MEDIUM", 3,
+        "BODYGUARD", 4,
+        "WEREWOLF", 5,
+        "POSSESSED", 6
+    );
 
 	// これはなんだ？
 	int winCount = 0;
@@ -153,16 +163,24 @@ public class BasketBasePlayer implements Player {
 		}
 	}
 
+	double getPred(int agent, int role) {
+		if (onnxPred != null){
+			role = roleStringInt.get(Util.role_int_to_string[role]);
+			return (double) onnxPred[role][agent];
+		} else {
+			return 0;
+		}
+		
+	}
+
 	protected int chooseMostLikelyWerewolf() {
 	//最も人狼らしいプレイヤー
-		float[][] pred = predict(sm, env, session, logger);
-		sh.rp.pred = pred;
 		int c = -1;
 		double mn = -1e9; //-10^9
 		for (int i = 0; i < numAgents; i++)
 			if (i != meint) //自分じゃないなら
 				if (sh.gamestate.agents[i].Alive) { //生きているなら
-					double score = sh.rp.getProb(i, Util.WEREWOLF);
+					double score = getPred(i, Util.WEREWOLF);
 					// + sh.gamestate.cnt_vote(i) * 0.0001; 
 					//(stateholder -> roleprediction で推定した人狼の可能性) + (そのプレイヤーに投票宣言している人の数 × 0.0001)
 					if (mn < score) { //最大値を取ってくる
@@ -175,14 +193,13 @@ public class BasketBasePlayer implements Player {
 
 	protected int chooseMostLikelyExecuted(double th) { 
 	//最も追放されそうなプレイヤー
-		float[][] pred = predict(sm, env, session, logger);
 		int c = -1;
 		double mn = th;
 		for (int i = 0; i < numAgents; i++)
 			if (i != meint) //自分じゃないなら
 				if (sh.gamestate.agents[i].Alive) { //生きているなら
-					double score = (double) pred[6][i];
-					// sh.gamestate.cnt_vote(i) + sh.rp.getProb(i, Util.WEREWOLF);
+					double score = (double) onnxPred[6][i];
+					// sh.gamestate.cnt_vote(i) + getPred(i, Util.WEREWOLF);
 					//(そのプレイヤーに投票宣言している人の数) + (人狼の可能性 ※0~1の間)
 					if (mn < score) { //最大値を取ってくる
 						mn = score;
@@ -234,6 +251,8 @@ public class BasketBasePlayer implements Player {
 		numAgents = gameInfo.getAgentList().size();
 		// yutian
 		sm = new StatusMatrix();
+		logger.fine("Game start");
+		logger.fine(gameInfo.getRole().toString());
 
 		if (first) {
 			first = false;
@@ -247,32 +266,17 @@ public class BasketBasePlayer implements Player {
 					fh = new FileHandler("debug.log");
 					logger.addHandler(fh);
 					// set to info to hide the log
-					fh.setFormatter(formatter);  
+					fh.setFormatter(formatter); 
 				}
 			} catch (IOException e) {  
 				e.printStackTrace();  
 			}
 
 			try {
-				// String onnx_path = getClass().getResource("CNNLSTM_0721053248.onnx").toString();
-				String onnx_path = getClass().getResource("CNNLSTM_0721053248.onnx").getPath();
-				String systemName = System.getProperty("os.name");
-				logger.fine("ONNX path: " + onnx_path);
-				logger.fine("System: " + systemName);
-				for (int i = 0; i < onnx_path.length(); i++){
-					if (onnx_path.substring(i).startsWith("file:")){
-						onnx_path = onnx_path.substring(i+5);
-						break;
-					}
-				}
-				if (systemName.startsWith("Windows")) {
-					if (onnx_path.startsWith("/")){
-						session = env.createSession(onnx_path.substring(1), new OrtSession.SessionOptions());
-					}
-				} else {
-					session = env.createSession(onnx_path, new OrtSession.SessionOptions());
-				}
-			} catch (OrtException e) {
+				InputStream model_is = getClass().getResourceAsStream("CNNLSTM_0721053248.onnx");
+				byte[] model_bytes = model_is.readAllBytes();
+				session = env.createSession(model_bytes, new OrtSession.SessionOptions());
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
@@ -378,15 +382,24 @@ public class BasketBasePlayer implements Player {
 			executedChecked[i] = false;
 		}
 
-		// logger.fine("============HOWLS DEBUG: INITIALIZED=============");
-
 	}
 
 	public void update(GameInfo gameInfo) {
 		currentGameInfo = gameInfo;
 		
 		// yutian
-		sm.update(currentGameInfo);
+		try{
+			sm.update(currentGameInfo);
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		if (sm.matrixList.size()>0){
+			try{
+				onnxPred = predict(sm, env, session, logger);
+			} catch (Exception e){
+				e.printStackTrace();
+			}
+		}
 		
 		//生存者を更新
 		for (int i = 0; i < numAgents; i++)
@@ -614,11 +627,9 @@ public class BasketBasePlayer implements Player {
 				}
 			}
 		}
-		logger.fine("===========================");
 		logger.fine("day: " + sm.day);
 		logger.fine("len: " + sourceArray[0].length);
-		logger.fine(Arrays.deepToString(sourceArray[0][sourceArray[0].length-1]));
-		logger.fine("===========================");
+		// logger.fine(Arrays.deepToString(sourceArray[0][sourceArray[0].length-1]));
 		OnnxTensor tensorFromArray;
 		//TODO: 6 roles + aux
 		float[][] pred = new float[7][sm.matrixList.get(0)[0].length];
@@ -634,9 +645,8 @@ public class BasketBasePlayer implements Player {
 			}
 			pred[6] = aux_res[0][res[0].length-1];
 			// aux_pred = aux_res[0][res[0].length-1];
-            logger.fine(Arrays.deepToString(pred));
+            // logger.fine(Arrays.deepToString(pred));
 			// logger.fine(Arrays.toString(aux_pred));
-			logger.fine("===========================");
 		} catch (OrtException e) {
 			e.printStackTrace();
 		}
@@ -653,8 +663,6 @@ public class BasketBasePlayer implements Player {
 			votingDay = currentGameInfo.getDay();
 			sm.preFirstVoteList = new ArrayList<Vote>();
 		}
-		
-		// float[] prediction = predict(sm, env, session, logger);
 
 		return chooseVote();
 	}

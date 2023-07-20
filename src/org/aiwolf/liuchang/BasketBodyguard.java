@@ -83,7 +83,7 @@ public class BasketBodyguard extends BasketVillager {
 		int c = 0;
 
 		// for (int i = 0; i < numAgents; i++) {
-		// 	System.out.print(sh.rp.getProb(i, Util.WEREWOLF) + " ");
+		// 	System.out.print(getPred(i, Util.WEREWOLF) + " ");
 		// }
 		// System.out.println();
 		
@@ -148,7 +148,7 @@ public class BasketBodyguard extends BasketVillager {
 		int c = 0;
 
 		// for (int i = 0; i < numAgents; i++) {
-		// 	System.out.print(sh.rp.getProb(i, Util.WEREWOLF) + " ");
+		// 	System.out.print(getPred(i, Util.WEREWOLF) + " ");
 		// }
 		// System.out.println();
 		
@@ -157,8 +157,8 @@ public class BasketBodyguard extends BasketVillager {
 			if (i != meint) {
 				
 				if (sh.gamestate.agents[i].Alive) {
-					double score = sh.rp.getProb(i, Util.VILLAGER) + 3 * sh.rp.getProb(i, Util.SEER)
-							+ sh.rp.getProb(i, Util.MEDIUM);
+					double score = getPred(i, Util.VILLAGER) + 3 * getPred(i, Util.SEER)
+							+ getPred(i, Util.MEDIUM);
 					score += 1.0 * wincnt[i] / (gamecount + 0.01);
 					if (mn < score) {
 						mn = score;

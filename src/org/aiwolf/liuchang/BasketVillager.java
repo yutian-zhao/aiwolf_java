@@ -128,7 +128,7 @@ public class BasketVillager extends BasketBasePlayer {
 		int c = 0;
 
 		// for (int i = 0; i < numAgents; i++) {
-		// 	System.out.print(sh.rp.getProb(i, Util.WEREWOLF) + " ");
+		// 	System.out.print(getPred(i, Util.WEREWOLF) + " ");
 		// }
 		// System.out.println();
 

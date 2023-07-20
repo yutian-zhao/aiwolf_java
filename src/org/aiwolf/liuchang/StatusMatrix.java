@@ -142,7 +142,12 @@ public class StatusMatrix {
 				content = replaceSubject(content, talker);
 			}
 
-			parseSentence(content, talker, true);
+			try{
+                parseSentence(content, talker, true);
+            } catch (Exception e) {
+                System.out.println(talk.getText());
+                e.printStackTrace();
+            }
 
 		}
 		talkListHead = currentGameInfo.getTalkList().size(); //次にtalkを読むときの開始位置を設定
@@ -159,19 +164,22 @@ public class StatusMatrix {
 		switch (content.getTopic()) {
         case ESTIMATE:
             if (content.getSubject() == talker){
-                int itarget = content.getTarget().getAgentIdx()-1;
-                Role estimateRole = content.getRole();
-                if (estimateRole != Role.ANY){
-                    int estimateResult = roleint.get(estimateRole);
-                    int attitude = -1;
-                    if (estimateRole.getSpecies()==Species.HUMAN){
-                        attitude = 1;
-                    }
-                    int[] ta = new int[]{itarget, attitude};
-                    target_attitude.add(ta);
-                    if (update){
-                        dailyMatrix[5][italker][itarget] = estimateResult;
-                        dailyMatrix[6][italker][itarget] = attitude;
+                target = content.getTarget();
+                if (target!=null && target.getAgentIdx()>0){
+                    int itarget = target.getAgentIdx()-1;
+                    Role estimateRole = content.getRole();
+                    if (roleint.get(estimateRole)!=null){
+                        int estimateResult = roleint.get(estimateRole);
+                        int attitude = -1;
+                        if (estimateRole.getSpecies()==Species.HUMAN){
+                            attitude = 1;
+                        }
+                        int[] ta = new int[]{itarget, attitude};
+                        target_attitude.add(ta);
+                        if (update){
+                            dailyMatrix[5][italker][itarget] = estimateResult;
+                            dailyMatrix[6][italker][itarget] = attitude;
+                        }
                     }
                 }
             }
@@ -179,7 +187,7 @@ public class StatusMatrix {
 		case COMINGOUT:
             if (content.getSubject() == talker){
                 Role coRole = content.getRole();
-                if (coRole != Role.ANY){
+                if (roleint.get(coRole)!=null){
                     int coResult = roleint.get(coRole);
                     int[] ta = new int[]{italker, 1};
                     target_attitude.add(ta);
@@ -194,7 +202,7 @@ public class StatusMatrix {
                 Arrays.fill(dailyMatrix[4][italker], roleint.get(Role.SEER));
             }
             target = content.getTarget();
-            if (target!=null){
+            if (target!=null && target.getAgentIdx()>0){
                 int itarget = target.getAgentIdx()-1;
                 int[] ta = new int[]{itarget, -1};
                 target_attitude.add(ta);
@@ -209,7 +217,7 @@ public class StatusMatrix {
                     Arrays.fill(dailyMatrix[4][italker], roleint.get(Role.SEER));
                 }
                 target = content.getTarget();
-                if (target!=null){
+                if (target!=null && target.getAgentIdx()>0){
                     int itarget = target.getAgentIdx()-1;
                     int divinedResult = 1; 
                     if (content.getResult() != Species.HUMAN){
@@ -229,7 +237,7 @@ public class StatusMatrix {
                     Arrays.fill(dailyMatrix[4][italker], roleint.get(Role.MEDIUM));
                 }
                 target = content.getTarget();
-                if (target!=null){
+                if (target!=null && target.getAgentIdx()>0){
                     int itarget = target.getAgentIdx()-1;
                     int idfResult = 1; 
                     if (content.getResult() != Species.HUMAN){
@@ -250,7 +258,7 @@ public class StatusMatrix {
                     Arrays.fill(dailyMatrix[4][italker], roleint.get(Role.BODYGUARD));
                 }
                 target = content.getTarget();
-                if (target!=null){
+                if (target!=null && target.getAgentIdx()>0){
                     int itarget = target.getAgentIdx()-1;
                     int[] ta = new int[]{itarget, 1};
                     target_attitude.add(ta);
@@ -262,7 +270,7 @@ public class StatusMatrix {
             break;
         case VOTE:
             target = content.getTarget();
-            if (target!=null){
+            if (target!=null && target.getAgentIdx()>0){
                 int itarget = target.getAgentIdx()-1;
                 int[] ta = new int[]{itarget, -1};
                 target_attitude.add(ta);

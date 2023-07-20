@@ -190,7 +190,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 				for (int i = 0; i < numAgents; i++) { //すべてのプレイヤーの中で
 					if (i != meint) { //自分以外で
 						if (sh.gamestate.agents[i].Alive) { //生きているなら
-							double score = 1 - sh.rp.getProb(i, Util.POSSESSED); //狂人の可能性を取ってきて
+							double score = 1 - getPred(i, Util.POSSESSED); //狂人の可能性を取ってきて
 							if (mn < score) { //最小値を記録する(1から引いたものの最大値を取っているため)
 								mn = score;
 								c = i;
@@ -214,7 +214,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 					for (int i = 0; i < numAgents; i++) //すべてのプレイヤーの中で
 						if (i != meint) //自分以外で
 							if (sh.gamestate.agents[i].Alive) { //生きているなら
-								double score = sh.rp.getProb(i, Util.POSSESSED); //狂人の可能性を取ってきて
+								double score = getPred(i, Util.POSSESSED); //狂人の可能性を取ってきて
 								if (mn < score) { //最大値を記録する(投票先を変える)
 									mn = score;
 									c = i;
@@ -229,7 +229,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 				for (int i = 0; i < numAgents; i++) //すべてのプレイヤーの中で
 					if (i != meint) //自分以外で
 						if (sh.gamestate.agents[i].Alive) { //生きているなら
-							double score = sh.gamestate.cnt_vote(i) + sh2.rp.getProb(i, Util.WEREWOLF); //そのプレイヤーの得票数(投票先として宣言されている数) + 自分が村陣営(村人または占い師)だとしたときのそのプレイヤーの人狼の可能性
+							double score = sh.gamestate.cnt_vote(i) + getPred(i, Util.WEREWOLF); //そのプレイヤーの得票数(投票先として宣言されている数) + 自分が村陣営(村人または占い師)だとしたときのそのプレイヤーの人狼の可能性
 							if (mn < score) {
 								mn = score;
 								c = i;
@@ -240,7 +240,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 					for (int i = 0; i < numAgents; i++) { //すべてのプレイヤーの中で
 						if (i != meint) { //自分以外で
 							if (sh.gamestate.agents[i].Alive) { //生きているなら
-								double score = sh2.rp.getProb(i, Util.WEREWOLF); //村視点(村人または占い師)でのそのプレイヤーの人狼の可能性を取ってきて
+								double score = getPred(i, Util.WEREWOLF); //村視点(村人または占い師)でのそのプレイヤーの人狼の可能性を取ってきて
 								if (mn < score) { //最大値を記録する
 									mn = score;
 									c = i;
@@ -270,7 +270,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 						for (int i = 0; i < numAgents; i++) { //すべてのプレイヤーの中で
 							if (i != meint) { //自分以外で
 								if (sh.gamestate.agents[i].Alive && nakama[i]) { //生きていて、仲間なら
-									double score = sh2.rp.getProb(i, Util.WEREWOLF); //村視点(村人または占い師)でのそのプレイヤーの人狼の可能性を取ってきて
+									double score = getPred(i, Util.WEREWOLF); //村視点(村人または占い師)でのそのプレイヤーの人狼の可能性を取ってきて
 									if ((mn < score) && sh.gamestate.cnt_vote(i) + 1 < tmp) { //自分が投票しても大丈夫そうなら最大値を記録する
 										mn = score;
 										c = i;
@@ -283,7 +283,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 					for (int i = 0; i < numAgents; i++) { //すべてのプレイヤーの中で
 						if (i != meint) { //自分以外で
 							if (sh.gamestate.agents[i].Alive) { //生きているなら
-								double score = sh2.rp.getProb(i, Util.WEREWOLF); //村視点(村人または占い師)でのそのプレイヤーの人狼の可能性を取ってきて
+								double score = getPred(i, Util.WEREWOLF); //村視点(村人または占い師)でのそのプレイヤーの人狼の可能性を取ってきて
 								if (mn < score) { //最大値を記録する
 									mn = score;
 									c = i;
@@ -378,7 +378,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 					if (i != meint) { //自分以外で
 						if (sh.gamestate.agents[i].Alive) { //生きていて
 							if (divined[i] == 0) { //まだ自分が占っていないなら
-								double score = sh2.rp.getProb(i, Util.WEREWOLF); //占い師視点のそのプレイヤーの人狼の可能性を取ってきて
+								double score = getPred(i, Util.WEREWOLF); //占い師視点のそのプレイヤーの人狼の可能性を取ってきて
 								if (mn < score) { //最大値を記録
 									mn = score;
 									c = i;
@@ -461,7 +461,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 					}
 					if (seer_count == 1) { //占い師COが生きているならば
 						if (seers[1] != -1) { //2人生きているなら、狂人の可能性が高い方を選ぶ
-							if (sh.rp.getProb(seers[0], Util.POSSESSED) > sh.rp.getProb(seers[1],  Util.POSSESSED)) {
+							if (getPred(seers[0], Util.POSSESSED) > getPred(seers[1],  Util.POSSESSED)) {
 								c = seers[0];
 							}
 							else {
@@ -472,7 +472,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 					}
 					else if (medium_count == 1) { //占い師COが生きておらず、霊媒師COが生きているならば
 						if (mediums[1] != -1) {
-							if (sh.rp.getProb(mediums[0], Util.POSSESSED) > sh.rp.getProb(mediums[1], Util.POSSESSED)) {
+							if (getPred(mediums[0], Util.POSSESSED) > getPred(mediums[1], Util.POSSESSED)) {
 								c = mediums[0];
 							}
 							else {
@@ -491,7 +491,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 										break;
 									}
 									else {
-										double score = sh.rp.getProb(i, Util.POSSESSED);
+										double score = getPred(i, Util.POSSESSED);
 										if (mn < score) {
 											mn = score;
 											c = i;
@@ -548,9 +548,9 @@ public class BasketWerewolf extends BasketBasePlayer {
 					double all = 0;
 					double alive = 0;
 					for (int i = 0; i < numAgents; i++) { //すべてのプレイヤーの
-						all += sh.rp.getProb(i, Util.POSSESSED); //人狼視点での狂人の可能性をallに合計する
+						all += getPred(i, Util.POSSESSED); //人狼視点での狂人の可能性をallに合計する
 						if (sh.gamestate.agents[i].Alive) { //生きているプレイヤーの狂人の可能性は
-							alive += sh.rp.getProb(i, Util.POSSESSED); //aliveにも合計しておく
+							alive += getPred(i, Util.POSSESSED); //aliveにも合計しておく
 						}
 					}
 					if (alive > 0.5 * all) { //生きているプレイヤーの狂人の可能性の合計がすべてのプレイヤーの狂人の可能性の合計の半分以上であれば(5人村で2人死亡した状況のため、死亡した2人と自分以外に生き残っている2人の狂人の可能性を比べていることになる) NOTE:PPに走る基準が緩すぎるかも
@@ -562,9 +562,9 @@ public class BasketWerewolf extends BasketBasePlayer {
 					double all = 0;
 					double alive = 0;
 					for (int i = 0; i < numAgents; i++) { //すべてのプレイヤーの
-						all += sh.rp.getProb(i, Util.POSSESSED); //人狼視点での狂人の可能性をallに合計する
+						all += getPred(i, Util.POSSESSED); //人狼視点での狂人の可能性をallに合計する
 						if (sh.gamestate.agents[i].Alive) { //生きているプレイヤーの狂人の可能性は
-							alive += sh.rp.getProb(i, Util.POSSESSED); //aliveにも合計しておく
+							alive += getPred(i, Util.POSSESSED); //aliveにも合計しておく
 						}
 					}
 					if (alive > 0.5 * all) { //生きているプレイヤーの狂人の可能性の合計がすべてのプレイヤーの狂人の可能性の合計の半分以上であれば
@@ -580,7 +580,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 					for (int i = 0; i < numAgents; i++)
 						if (i != meint)
 							if (sh.gamestate.agents[i].Alive) {
-								double score = 1 - sh.rp.getProb(i, Util.POSSESSED);
+								double score = 1 - getPred(i, Util.POSSESSED);
 								if (mn < score) {
 									mn = score;
 									c = i;
@@ -626,7 +626,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 		
 		
 		for (int i = 0; i < numAgents; i++) {
-			System.out.print(sh2.rp.getProb(i, Util.WEREWOLF) + " "); //村視点、各プレイヤーの人狼の可能性を出力しておく(発言ではない)
+			System.out.print(getPred(i, Util.WEREWOLF) + " "); //村視点、各プレイヤーの人狼の可能性を出力しておく(発言ではない)
 		}
 		System.out.println();
 		if (numAgents == 5) { //5人村なら
@@ -635,11 +635,11 @@ public class BasketWerewolf extends BasketBasePlayer {
 			for (int i = 0; i < numAgents; i++) //すべてのプレイヤーの中で
 				if (i != meint) //自分以外で
 					if (sh.gamestate.agents[i].Alive) { //生きているなら
-						double score = sh2.rp.getProb(i, Util.WEREWOLF); //村視点での人狼の可能性を取ってきて
+						double score = getPred(i, Util.WEREWOLF); //村視点での人狼の可能性を取ってきて
 						if (day != 1 || sh.gamestate.turn > 2) {
 							//score += sh.gamestate.cnt_vote(i); //乗っかり戦略
 						}
-						//double score = sh2.rp.getProb(i, Util.WEREWOLF);
+						//double score = getPred(i, Util.WEREWOLF);
 						if (mn < score) { //最大値を記録
 							mn = score;
 							c = i;
@@ -650,7 +650,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 				for (int i = 0; i < numAgents; i++) {
 					if (i != meint) {
 						if (sh.gamestate.agents[i].Alive) {
-							double score = sh2.rp.getProb(i, Util.WEREWOLF);
+							double score = getPred(i, Util.WEREWOLF);
 							if (mn < score) {
 								mn = score;
 								c = i;
@@ -670,7 +670,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 								if (agents[i].COrole == Role.SEER) {
 									ArrayList<Double> data = new ArrayList<Double>();
 									data.add((double)i);
-									data.add(sh.rp.getProb(i, Util.SEER)); //真占いの可能性が高いプレイヤーへの投票を宣言する
+									data.add(getPred(i, Util.SEER)); //真占いの可能性が高いプレイヤーへの投票を宣言する
 									int j = 0;
 									for (; j < taikou.size(); j++) {
 										if (taikou.get(j).get(1) < data.get(1)) break; //降順になるようにしておく
@@ -682,7 +682,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 								if (agents[i].COrole == Role.BODYGUARD) {
 									ArrayList<Double> data = new ArrayList<Double>();
 									data.add((double)i);
-									data.add(sh.rp.getProb(i, Util.BODYGUARD)); //真狩人の可能性が高いプレイヤーへの投票を宣言する
+									data.add(getPred(i, Util.BODYGUARD)); //真狩人の可能性が高いプレイヤーへの投票を宣言する
 									int j = 0;
 									for (; j < taikou.size(); j++) {
 										if (taikou.get(j).get(1) < data.get(1)) break; //降順になるようにしておく
@@ -694,7 +694,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 								if (agents[i].COrole == Role.MEDIUM) {
 									ArrayList<Double> data = new ArrayList<Double>();
 									data.add((double)i);
-									data.add(sh.rp.getProb(i, Util.MEDIUM)); //真霊媒の可能性が高いプレイヤーへの投票を宣言する
+									data.add(getPred(i, Util.MEDIUM)); //真霊媒の可能性が高いプレイヤーへの投票を宣言する
 									int j = 0;
 									for (; j < taikou.size(); j++) {
 										if (taikou.get(j).get(1) < data.get(1)) break; //降順になるようにしておく
@@ -728,7 +728,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 					for (int i = 0; i < numAgents; i++) { //すべてのプレイヤーの中で
 						if (i != meint) { //自分以外で
 							if (sh.gamestate.agents[i].Alive) { //生きているなら
-								double score = sh2.rp.getProb(i, Util.WEREWOLF); //村視点での人狼の可能性を取ってきて
+								double score = getPred(i, Util.WEREWOLF); //村視点での人狼の可能性を取ってきて
 								if (nakama[i]) //本当に人狼(仲間)ならスコアを減らして
 									score -= 0.4;
 								if (mn < score) { //最大値を記録
@@ -796,8 +796,8 @@ public class BasketWerewolf extends BasketBasePlayer {
 			for (int i = 0; i < numAgents; i++) { //すべてのプレイヤーの中で
 				if (i != meint) { //自分以外で
 					if (sh.gamestate.agents[i].Alive) { //生きているなら
-						double score = 1 - sh.rp.getProb(i, Util.POSSESSED); //狂人の確率を取ってきて
-						//double score = sh.rp.getProb(i, Util.SEER);
+						double score = 1 - getPred(i, Util.POSSESSED); //狂人の確率を取ってきて
+						//double score = getPred(i, Util.SEER);
 						if (mn < score) { //最小値を記録(1-getProb(POSSESED)の最大値なので)
 							mn = score;
 							c = i;
@@ -829,10 +829,10 @@ public class BasketWerewolf extends BasketBasePlayer {
 			for (int i = 0; i < numAgents; i++) { //すべてのプレイヤーの中で
 				if (i != meint && !nakama[i]) { //自分と仲間(人狼)以外で
 					if (sh.gamestate.agents[i].Alive) { //生きているなら
-						double score = 1 - sh.rp.getProb(i, Util.POSSESSED); //狂人の確率を取ってきて大小を反転し(scoreが高いほうが狂人の可能性が低い)
-						score += 0.2 * sh.rp.getProb(i, Util.SEER); //占い師の確率×0.2を足す
-						score += 0.1 * sh.rp.getProb(i, Util.BODYGUARD); //狩人の確率×0.1を足す
-						score += 0.1 * sh.rp.getProb(i, Util.MEDIUM); //霊媒師の確率×0.1を足す
+						double score = 1 - getPred(i, Util.POSSESSED); //狂人の確率を取ってきて大小を反転し(scoreが高いほうが狂人の可能性が低い)
+						score += 0.2 * getPred(i, Util.SEER); //占い師の確率×0.2を足す
+						score += 0.1 * getPred(i, Util.BODYGUARD); //狩人の確率×0.1を足す
+						score += 0.1 * getPred(i, Util.MEDIUM); //霊媒師の確率×0.1を足す
 						score += 3 * wincnt[i] / (gamecount + 0.01); //勝率×3を足す
 						if (agents[i].COrole == Role.SEER) //占い師COしているプレイヤーは
 							seervote = i; //記憶しておく(複数いる場合は、インデックスが最も大きいプレイヤーだけを記憶)
@@ -925,10 +925,10 @@ public class BasketWerewolf extends BasketBasePlayer {
 				for (int i = 0; i < numAgents; i++) { //すべてのプレイヤーの中で
 					if (i != meint && !nakama[i]) { //自分と仲間(人狼)以外で
 						if (sh.gamestate.agents[i].Alive) { //生きているなら
-							double score = 1 - sh.rp.getProb(i, Util.POSSESSED); //狂人の確率を取ってきて大小を反転し(scoreが高いほうが狂人の可能性が低い)
-							score += 0.2 * sh.rp.getProb(i, Util.SEER); //占い師の確率×0.2を足す
-							score += 0.1 * sh.rp.getProb(i, Util.BODYGUARD); //狩人の確率×0.1を足す
-							score += 0.1 * sh.rp.getProb(i, Util.MEDIUM); //霊媒師の確率×0.1を足す
+							double score = 1 - getPred(i, Util.POSSESSED); //狂人の確率を取ってきて大小を反転し(scoreが高いほうが狂人の可能性が低い)
+							score += 0.2 * getPred(i, Util.SEER); //占い師の確率×0.2を足す
+							score += 0.1 * getPred(i, Util.BODYGUARD); //狩人の確率×0.1を足す
+							score += 0.1 * getPred(i, Util.MEDIUM); //霊媒師の確率×0.1を足す
 							score += 3 * wincnt[i] / (gamecount + 0.01); //勝率×3を足す
 							if (agents[i].COrole == Role.SEER) //占い師COしているプレイヤーは
 								seervote = i; //記憶しておく(複数いる場合は、インデックスが最も大きいプレイヤーだけを記憶)
@@ -1006,10 +1006,10 @@ public class BasketWerewolf extends BasketBasePlayer {
 			for (int i = 0; i < numAgents; i++) { //すべてのプレイヤーの中で
 				if (i != meint && !nakama[i]) { //自分と仲間以外で
 					if (sh.gamestate.agents[i].Alive) { //生きているなら
-						double score = 1 - sh.rp.getProb(i, Util.POSSESSED); //狂人の確率を取ってきて大小を反転し(以下、voteと同じ)
-						score += 0.2 * sh.rp.getProb(i, Util.SEER);
-						score += 0.1 * sh.rp.getProb(i, Util.BODYGUARD);
-						score += 0.1 * sh.rp.getProb(i, Util.MEDIUM);
+						double score = 1 - getPred(i, Util.POSSESSED); //狂人の確率を取ってきて大小を反転し(以下、voteと同じ)
+						score += 0.2 * getPred(i, Util.SEER);
+						score += 0.1 * getPred(i, Util.BODYGUARD);
+						score += 0.1 * getPred(i, Util.MEDIUM);
 						score += 3 * wincnt[i] / (gamecount + 0.01);
 						if (agents[i].COrole == Role.SEER)
 							Atseer = i;
