@@ -254,8 +254,8 @@ public class BasketBasePlayer implements Player {
 			}
 
 			try {
-				String onnx_path = getClass().getResource("CNNLSTM_0625170355.onnx").toString();
-				// String onnx_path = getClass().getResource("CNNLSTM_0625170355.onnx").getPath();
+				// String onnx_path = getClass().getResource("CNNLSTM_0721053248.onnx").toString();
+				String onnx_path = getClass().getResource("CNNLSTM_0721053248.onnx").getPath();
 				String systemName = System.getProperty("os.name");
 				logger.fine("ONNX path: " + onnx_path);
 				logger.fine("System: " + systemName);
