@@ -155,51 +155,34 @@ public class BasketBasePlayer implements Player {
 
 	protected int chooseMostLikelyWerewolf() {
 	//最も人狼らしいプレイヤー
+		float[][] pred = predict(sm, env, session, logger);
+		sh.rp.pred = pred;
 		int c = -1;
-
-		float closest = 100000;
-		float[] prediction = predict(sm, env, session, logger);
-		for (int i=0; i<prediction.length; i++){
-			if (agents[i].alive){
-				if ((4.5 <= prediction[i]) && (prediction[i] <=5.5)){
-					if (Math.abs(prediction[i]-5) < closest){
+		double mn = -1e9; //-10^9
+		for (int i = 0; i < numAgents; i++)
+			if (i != meint) //自分じゃないなら
+				if (sh.gamestate.agents[i].Alive) { //生きているなら
+					double score = sh.rp.getProb(i, Util.WEREWOLF);
+					// + sh.gamestate.cnt_vote(i) * 0.0001; 
+					//(stateholder -> roleprediction で推定した人狼の可能性) + (そのプレイヤーに投票宣言している人の数 × 0.0001)
+					if (mn < score) { //最大値を取ってくる
+						mn = score;
 						c = i;
-						closest = Math.abs(prediction[i]-5);
-					} 
-				}
-			}
-			
-		}
-
-		if (c==-1){
-			double mn = -1e9; //-10^9
-			for (int i = 0; i < numAgents; i++){
-				if (i != meint){ //自分じゃないなら
-					if (sh.gamestate.agents[i].Alive) { //生きているなら
-						double score = sh.rp.getProb(i, Util.WEREWOLF) + sh.gamestate.cnt_vote(i) * 0.0001; 
-						//(stateholder -> roleprediction で推定した人狼の可能性) + (そのプレイヤーに投票宣言している人の数 × 0.0001)
-						if (mn < score) { //最大値を取ってくる
-							mn = score;
-							c = i;
-						}
 					}
-				} 
-			}	
-		} else {
-			logger.fine("~~~~~ estimate werewolf is " + c);
-		}
+				}
 		return c;
-
 	}
 
 	protected int chooseMostLikelyExecuted(double th) { 
 	//最も追放されそうなプレイヤー
+		float[][] pred = predict(sm, env, session, logger);
 		int c = -1;
 		double mn = th;
 		for (int i = 0; i < numAgents; i++)
 			if (i != meint) //自分じゃないなら
 				if (sh.gamestate.agents[i].Alive) { //生きているなら
-					double score = sh.gamestate.cnt_vote(i) + sh.rp.getProb(i, Util.WEREWOLF);
+					double score = (double) pred[6][i];
+					// sh.gamestate.cnt_vote(i) + sh.rp.getProb(i, Util.WEREWOLF);
 					//(そのプレイヤーに投票宣言している人の数) + (人狼の可能性 ※0~1の間)
 					if (mn < score) { //最大値を取ってくる
 						mn = score;
@@ -271,7 +254,7 @@ public class BasketBasePlayer implements Player {
 			}
 
 			try {
-				URL onnx_path = getClass().getResource("CNNLSTM_0625170355.onnx");
+				URL onnx_path = getClass().getResource("CNNLSTM_0721053248.onnx");
 				String systemName = System.getProperty("os.name");
 				logger.fine("ONNX path: " + onnx_path.getPath());
 				logger.fine("System: " + systemName);
@@ -609,7 +592,7 @@ public class BasketBasePlayer implements Player {
 		return Talk.SKIP;
 	}
 
-	public float[] predict(StatusMatrix sm, OrtEnvironment env, OrtSession session, Logger logger){
+	public float[][] predict(StatusMatrix sm, OrtEnvironment env, OrtSession session, Logger logger){
 		float[][][][][] sourceArray = new float[1][sm.matrixList.size()][sm.matrixList.get(0).length][sm.matrixList.get(0)[0].length][sm.matrixList.get(0)[0].length];
 		for (int i = 0; i < sourceArray.length; i++){
 			for (int j = 0; j < sourceArray[0].length; j++){
@@ -628,21 +611,28 @@ public class BasketBasePlayer implements Player {
 		logger.fine(Arrays.deepToString(sourceArray[0][sourceArray[0].length-1]));
 		logger.fine("===========================");
 		OnnxTensor tensorFromArray;
-		float[] pred = new float[sm.matrixList.get(0)[0].length];
+		//TODO: 6 roles + aux
+		float[][] pred = new float[7][sm.matrixList.get(0)[0].length];
+		// float[] aux_pred = new float[sm.matrixList.get(0)[0].length];
 		try {
 			tensorFromArray = OnnxTensor.createTensor(env,sourceArray);
 			Map<String, OnnxTensor> inputs = Map.of("modelInput", tensorFromArray);
 			var results = session.run(inputs);
-			float[][][] res = (float[][][]) results.get(0).getValue();
-			pred = res[0][res[0].length-1];
-            logger.fine(Arrays.toString(pred));
+			float[][][][] res = (float[][][][]) results.get(0).getValue(); // B,C,L,D
+			float[][][] aux_res = (float[][][]) results.get(1).getValue();
+			for (int i=0; i<6; i++){
+				pred[i] = res[0][res[0].length-1][i];
+			}
+			pred[6] = aux_res[0][res[0].length-1];
+			// aux_pred = aux_res[0][res[0].length-1];
+            logger.fine(Arrays.deepToString(pred));
+			// logger.fine(Arrays.toString(aux_pred));
 			logger.fine("===========================");
 		} catch (OrtException e) {
 			e.printStackTrace();
 		}
 		// the result on the current day
 		return pred;
-
 	}
 
 	public Agent vote() {

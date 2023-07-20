@@ -46,11 +46,6 @@ public class BasketVillager extends BasketBasePlayer {
 	}
 
 	protected Agent chooseVote() {
-		float[] prediction = predict(sm, env, session, logger); 
-		logger.fine(Arrays.toString(prediction));
-		logger.fine("~~~~~~~~~~~~~~~~~~~");
-		
-
 		gamedata.add(new GameData(DataType.VOTESTART, day, meint, meint, false));
 
 		sh.process(params, gamedata);
