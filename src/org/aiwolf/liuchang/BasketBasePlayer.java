@@ -1,6 +1,7 @@
 package org.aiwolf.liuchang;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
@@ -43,6 +44,7 @@ public class BasketBasePlayer implements Player {
 	static FileHandler fh;
 	static SimpleFormatter formatter = new SimpleFormatter();
 	int votingDay;
+	boolean debug_log = false;
 
 	// これはなんだ？
 	int winCount = 0;
@@ -255,19 +257,25 @@ public class BasketBasePlayer implements Player {
 			new Util();
 
 			// yutian    
+			
 			try {
-				session = env.createSession("CNNLSTM_0625170355.onnx",new OrtSession.SessionOptions());
-			} catch (OrtException e) {
-				e.printStackTrace();
-			}
-			try {  
-				fh = new FileHandler("debug.log");
-				logger.addHandler(fh);
-				logger.setLevel(Level.FINE); // set to info to hide the log
-				fh.setFormatter(formatter);  
-				// logger.fine("===============First time initialize===========");
+				logger.setLevel(Level.FINE);
+				if (debug_log) {
+					fh = new FileHandler("debug.log");
+					logger.addHandler(fh);
+					// set to info to hide the log
+					fh.setFormatter(formatter);  
+				}
 			} catch (IOException e) {  
 				e.printStackTrace();  
+			}
+
+			try {
+				URL onnx_path = getClass().getResource("CNNLSTM_0625170355.onnx");
+				logger.fine("ONNX path: "+onnx_path.toString());
+				session = env.createSession(onnx_path.toString().substring(6),new OrtSession.SessionOptions());
+			} catch (OrtException e) {
+				e.printStackTrace();
 			}
 
 			if (numAgents == 5)
