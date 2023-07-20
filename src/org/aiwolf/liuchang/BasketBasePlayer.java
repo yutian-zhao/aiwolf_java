@@ -254,14 +254,23 @@ public class BasketBasePlayer implements Player {
 			}
 
 			try {
-				URL onnx_path = getClass().getResource("CNNLSTM_0721053248.onnx");
+				String onnx_path = getClass().getResource("CNNLSTM_0625170355.onnx").toString();
+				// String onnx_path = getClass().getResource("CNNLSTM_0625170355.onnx").getPath();
 				String systemName = System.getProperty("os.name");
-				logger.fine("ONNX path: " + onnx_path.getPath());
+				logger.fine("ONNX path: " + onnx_path);
 				logger.fine("System: " + systemName);
+				for (int i = 0; i < onnx_path.length(); i++){
+					if (onnx_path.substring(i).startsWith("file:")){
+						onnx_path = onnx_path.substring(i+5);
+						break;
+					}
+				}
 				if (systemName.startsWith("Windows")) {
-					session = env.createSession(onnx_path.getPath().substring(1), new OrtSession.SessionOptions());
+					if (onnx_path.startsWith("/")){
+						session = env.createSession(onnx_path.substring(1), new OrtSession.SessionOptions());
+					}
 				} else {
-					session = env.createSession(onnx_path.getPath(), new OrtSession.SessionOptions());
+					session = env.createSession(onnx_path, new OrtSession.SessionOptions());
 				}
 			} catch (OrtException e) {
 				e.printStackTrace();
