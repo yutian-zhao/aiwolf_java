@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
+// import java.util.logging.FileHandler;
+// import java.util.logging.Level;
+// import java.util.logging.Logger;
+// import java.util.logging.SimpleFormatter;
 
 import org.aiwolf.client.lib.Content;
 import org.aiwolf.common.data.Agent;
@@ -41,11 +41,12 @@ public class BasketBasePlayer implements Player {
 	StatusMatrix sm;
 	static OrtEnvironment env = OrtEnvironment.getEnvironment();
 	static OrtSession session;
-	static Logger logger = Logger.getLogger("MyLog");  
-	static FileHandler fh;
-	static SimpleFormatter formatter = new SimpleFormatter();
+	// static Logger logger = Logger.getLogger("MyLog");  
+	// static FileHandler fh;
+	// static SimpleFormatter formatter = new SimpleFormatter();
 	int votingDay;
 	boolean debugLog = false;
+	boolean debugPred = true;
 	float[][] onnxPred;
 	Map<String, Integer> roleStringInt = Map.of(
         "VILLAGER", 1,
@@ -251,8 +252,8 @@ public class BasketBasePlayer implements Player {
 		numAgents = gameInfo.getAgentList().size();
 		// yutian
 		sm = new StatusMatrix();
-		logger.fine("Game start");
-		logger.fine(gameInfo.getRole().toString());
+		// logger.fine("Game start");
+		// logger.fine(gameInfo.getRole().toString());
 
 		if (first) {
 			first = false;
@@ -260,24 +261,24 @@ public class BasketBasePlayer implements Player {
 
 			// yutian    
 			
-			try {
-				logger.setLevel(Level.FINE);
-				if (debugLog) {
-					fh = new FileHandler("debug.log");
-					logger.addHandler(fh);
-					// set to info to hide the log
-					fh.setFormatter(formatter); 
-				}
-			} catch (IOException e) {  
-				e.printStackTrace();  
-			}
+			// try {
+			// 	logger.setLevel(Level.FINE);
+			// 	if (debugLog) {
+			// 		fh = new FileHandler("debug.log");
+			// 		logger.addHandler(fh);
+			// 		// set to info to hide the log
+			// 		fh.setFormatter(formatter); 
+			// 	}
+			// } catch (IOException e) {  
+			// 	System.out.println(e);;  
+			// }
 
 			try {
-				InputStream model_is = getClass().getResourceAsStream("CNNLSTM_0721053248.onnx");
+				InputStream model_is = getClass().getResourceAsStream("CNNLSTM_0722054515.onnx");
 				byte[] model_bytes = model_is.readAllBytes();
 				session = env.createSession(model_bytes, new OrtSession.SessionOptions());
 			} catch (Exception e) {
-				e.printStackTrace();
+				System.out.println(e);;
 			}
 
 			if (numAgents == 5)
@@ -375,7 +376,7 @@ public class BasketBasePlayer implements Player {
 		identList.clear();
 		humans.clear();
 		werewolves.clear();
-		System.out.println(meint + ", seerExecuted = " + seerExecuted);
+		// System.out.println(meint + ", seerExecuted = " + seerExecuted);
 
 		executedChecked = new boolean[numAgents];
 		for (int i = 0; i < numAgents; i++) {
@@ -388,17 +389,13 @@ public class BasketBasePlayer implements Player {
 		currentGameInfo = gameInfo;
 		
 		// yutian
-		try{
+		try {
 			sm.update(currentGameInfo);
 		} catch (Exception e){
-			e.printStackTrace();
+			System.out.println(e);
 		}
 		if (sm.matrixList.size()>0){
-			try{
-				onnxPred = predict(sm, env, session, logger);
-			} catch (Exception e){
-				e.printStackTrace();
-			}
+			onnxPred = predict(sm, env, session);
 		}
 		
 		//生存者を更新
@@ -416,14 +413,14 @@ public class BasketBasePlayer implements Player {
 			int idx = currentGameInfo.getExecutedAgent().getAgentIdx() - 1;
 			if ((!executedChecked[idx]) && (agents[idx].COrole == Role.SEER)) {
 				executedChecked[idx] = true;
-				System.out.println("-------------seer executed-------------");
+				// System.out.println("-------------seer executed-------------");
 				int COseer = 0;
 				for (int i = 0; i < numAgents; i++) {
 					if (agents[i].COrole == Role.SEER)
 						COseer++;
 				}
 				seerExecuted += 1 / (double)COseer;
-				System.out.println(seerExecuted);
+				// System.out.println(seerExecuted);
 			}
 		}
 
@@ -544,7 +541,7 @@ public class BasketBasePlayer implements Player {
 		if (day != currentGameInfo.getDay()) { //もし日が変わっているならば
 			day = currentGameInfo.getDay(); //dayを更新
 			before = -1;
-			System.out.println("daystart " + day);
+			// System.out.println("daystart " + day);
 			// yutian 
 			// getLatestVoteList -> getVoteList
 			List<Vote> votelist = currentGameInfo.getVoteList(); //前日の投票結果を取得
@@ -568,6 +565,10 @@ public class BasketBasePlayer implements Player {
 			lastTalkTurn = -1;
 
 			addExecutedAgent(currentGameInfo.getExecutedAgent()); //追放者を取得
+			// yutian
+			if (debugPred && currentGameInfo.getExecutedAgent() != null) {
+				System.out.println("YUTIAN Executed before day " + currentGameInfo.getDay()+ " is " + currentGameInfo.getExecutedAgent().getAgentIdx() + "(need -1)");
+			}
 
 			if (!currentGameInfo.getLastDeadAgentList().isEmpty()) {
 				addKilledAgent(currentGameInfo.getLastDeadAgentList().get(0)); //犠牲者を記録
@@ -614,7 +615,7 @@ public class BasketBasePlayer implements Player {
 		return Talk.SKIP;
 	}
 
-	public float[][] predict(StatusMatrix sm, OrtEnvironment env, OrtSession session, Logger logger){
+	public float[][] predict(StatusMatrix sm, OrtEnvironment env, OrtSession session){
 		float[][][][][] sourceArray = new float[1][sm.matrixList.size()][sm.matrixList.get(0).length][sm.matrixList.get(0)[0].length][sm.matrixList.get(0)[0].length];
 		for (int i = 0; i < sourceArray.length; i++){
 			for (int j = 0; j < sourceArray[0].length; j++){
@@ -627,8 +628,8 @@ public class BasketBasePlayer implements Player {
 				}
 			}
 		}
-		logger.fine("day: " + sm.day);
-		logger.fine("len: " + sourceArray[0].length);
+		// logger.fine("day: " + sm.day);
+		// logger.fine("len: " + sourceArray[0].length);
 		// logger.fine(Arrays.deepToString(sourceArray[0][sourceArray[0].length-1]));
 		OnnxTensor tensorFromArray;
 		//TODO: 6 roles + aux
@@ -638,7 +639,7 @@ public class BasketBasePlayer implements Player {
 			tensorFromArray = OnnxTensor.createTensor(env,sourceArray);
 			Map<String, OnnxTensor> inputs = Map.of("modelInput", tensorFromArray);
 			var results = session.run(inputs);
-			float[][][][] res = (float[][][][]) results.get(0).getValue(); // B,C,L,D
+			float[][][][] res = (float[][][][]) results.get(2).getValue(); // B,C,L,D
 			float[][][] aux_res = (float[][][]) results.get(1).getValue();
 			for (int i=0; i<6; i++){
 				pred[i] = res[0][res[0].length-1][i];
@@ -648,7 +649,9 @@ public class BasketBasePlayer implements Player {
             // logger.fine(Arrays.deepToString(pred));
 			// logger.fine(Arrays.toString(aux_pred));
 		} catch (OrtException e) {
-			e.printStackTrace();
+			System.out.println(e);
+		} catch (Exception e){
+			System.out.println(e);
 		}
 		// the result on the current day
 		return pred;
@@ -663,6 +666,24 @@ public class BasketBasePlayer implements Player {
 			votingDay = currentGameInfo.getDay();
 			sm.preFirstVoteList = new ArrayList<Vote>();
 		}
+
+		if (debugPred) {
+			System.out.println("YUTIAN Vote on day " + currentGameInfo.getDay());
+			System.out.println("YUTIAN onnxPred " + Arrays.deepToString(onnxPred));
+			double[][] rp_prob;
+			if (numAgents==5){
+				rp_prob = new double[4][numAgents];
+			} else {
+				rp_prob = new double[6][numAgents];
+			}
+			for (int i = 0; i < rp_prob.length; i++){
+				for (int j = 0; j < rp_prob[0].length; j++){
+					rp_prob[i][j] = sh.rp.getProb(j, i); // note that order differs
+				}
+			}
+			System.out.println("YUTIAN getProb " + Arrays.deepToString(rp_prob));
+		}
+
 
 		return chooseVote();
 	}
@@ -720,6 +741,13 @@ public class BasketBasePlayer implements Player {
 				}
 			}
 
+			// yutian
+			int[] trueRole = new int[numAgents];
+			for (int i = 0; i < trueRole.length; i++) {
+				trueRole[i] = sm.roleint.get(agents[i].role);
+			}
+			System.out.println("YUTIAN result: "+Arrays.toString(trueRole));
+
 			if (werewolfWins) {
 				ww++;
 			}
@@ -743,8 +771,8 @@ public class BasketBasePlayer implements Player {
 					seikai++;
 				}
 			}
-			System.out.println(ww / 100.0);
-			System.out.println(seikai + " " + all + " " + seikai / (double) all);
+			// System.out.println(ww / 100.0);
+			// System.out.println(seikai + " " + all + " " + seikai / (double) all);
 
 			//System.out.println(winWeight / allwinWeight);
 

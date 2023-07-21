@@ -132,7 +132,7 @@ public class BasketMedium extends BasketBasePlayer {
 
 		updateState(sh);
 		if (update_sh) {
-			System.out.println("SEARCH");
+			// System.out.println("SEARCH");
 			update_sh = false;
 			sh.serach(1000);
 		}
@@ -150,7 +150,7 @@ public class BasketMedium extends BasketBasePlayer {
 		if (c == -1) {
 			c = chooseMostLikelyWerewolf();
 		}
-		System.out.println("willvote " + (c + 1));
+		// System.out.println("willvote " + (c + 1));
 
 		/*
 		// 論点1: COするタイミング

@@ -38,8 +38,8 @@ public class StateHolder {
 		scorematrix = new ScoreMatrix();
 		scorematrix.init(N);
 		scorematrix.params = params;
-		if (debug)
-			System.out.println("GAMESTART, ME: " + me);
+		// // if (debug)
+			// System.out.println("GAMESTART, ME: " + me);
 	}
 
 	void update() {
@@ -57,10 +57,10 @@ public class StateHolder {
 			GameData g = logs.get(head);
 			switch (g.type) {
 			case TURNSTART: {
-				if (debug)
-					System.out.println("----------TURNSTART--------------" + gamestate.turn);
+				// if (debug)
+					// System.out.println("----------TURNSTART--------------" + gamestate.turn);
 				if (N == 5) {
-					System.out.println(gamestate.day + " " + gamestate.turn);
+					// System.out.println(gamestate.day + " " + gamestate.turn);
 					if (gamestate.day == 1 && gamestate.turn == 1) {
 						scorematrix.firstTurnEnd(gamestate);
 					}
@@ -77,11 +77,11 @@ public class StateHolder {
 
 				/*
 				for(int t = 0; t < Math.min(rp.assignments.size(), 10); t++){
-					System.out.print(rp.assignments.get(t).score + " ");
+					// System.out.print(rp.assignments.get(t).score + " ");
 					for(int i=0;i<N;i++){
-						System.out.print(rp.assignments.get(t).assignment.get(i) + " ");
+						// System.out.print(rp.assignments.get(t).assignment.get(i) + " ");
 					}
-					System.out.println();
+					// System.out.println();
 				}
 				*/
 
@@ -95,8 +95,8 @@ public class StateHolder {
 			case DAYCHANGE: {
 				gamestate.day++;
 				gamestate.day_init(N);
-				if (debug)
-					System.out.println("----------DAYCHANGE--------------");
+				// if (debug)
+					// System.out.println("----------DAYCHANGE--------------");
 			}
 				break;
 			case VOTESTART: {
@@ -104,52 +104,52 @@ public class StateHolder {
 				rp.recalc(scorematrix, gamestate);
 				rp.search(scorematrix, gamestate, times);
 
-				if (debug)
-					System.out.println("----------VOTESTART--------------");
+				// if (debug)
+					// System.out.println("----------VOTESTART--------------");
 			}
 				break;
 			case WILLVOTE: {
-				if (debug)
-					System.out.println(g.talker + " willvote " + g.object);
+				// if (debug)
+					// System.out.println(g.talker + " willvote " + g.object);
 				scorematrix.will_vote(gamestate, g.talker, g.object);
 			}
 				break;
 			case TALKDIVINED: {
-				if (debug)
-					System.out.println(g.talker + " divined " + g.object + " as " + (g.white ? "V" : "W"));
+				// if (debug)
+					// System.out.println(g.talker + " divined " + g.object + " as " + (g.white ? "V" : "W"));
 				scorematrix.talk_divined(gamestate, g.talker, g.object, g.white);
 			}
 				break;
 			case ID: {
-				if (debug)
-					System.out.println(g.talker + " idented " + g.object + " as " + (g.white ? "V" : "W"));
+				// if (debug)
+					// System.out.println(g.talker + " idented " + g.object + " as " + (g.white ? "V" : "W"));
 				scorematrix.ident(gamestate, g.talker, g.object, g.white);
 			}
 				break;
 			case CO: {
 				scorematrix.talk_co(gamestate, g.talker, g.object);
 				gamestate.agents[g.talker].corole = g.object;
-				if (debug)
-					System.out.println(g.talker + " CO " + Util.role_int_to_string[g.object]);
+				// if (debug)
+					// System.out.println(g.talker + " CO " + Util.role_int_to_string[g.object]);
 
 			}
 				break;
 			case VOTE: {
 				scorematrix.vote(gamestate, g.talker, g.object);
-				if (debug)
-					System.out.println(g.talker + " vote for " + g.object);
+				// if (debug)
+					// System.out.println(g.talker + " vote for " + g.object);
 			}
 				break;
 			case DIVINED: {
 				scorematrix.divined(gamestate, g.talker, g.object, g.white);
-				if (debug)
-					System.out.println(g.talker + " divined " + g.object + " " + (g.white ? "V" : "W"));
+				// if (debug)
+					// System.out.println(g.talker + " divined " + g.object + " " + (g.white ? "V" : "W"));
 			}
 				break;
 			case EXECUTED: {
 				gamestate.agents[g.object].Alive = false;
-				if (debug)
-					System.out.println("executed " + g.object);
+				// if (debug)
+					// System.out.println("executed " + g.object);
 			}
 				break;
 			case KILLED: {
@@ -159,27 +159,27 @@ public class StateHolder {
 						gamestate.agents[g.object].Alive = false;
 					}
 				}
-				if (debug)
-					System.out.println("killed " + g.object + " " + (g.white ? "" : "un") + "successfully");
+				// if (debug)
+					// System.out.println("killed " + g.object + " " + (g.white ? "" : "un") + "successfully");
 			}
 				break;
 			case WINNER: {
 				gamestate.agents[g.talker].wincnt++;
 
-				if (debug)
-					System.out.println("winner : " + g.talker);
+				// if (debug)
+					// System.out.println("winner : " + g.talker);
 			}
 				break;
 			case MATCHSTART: {
 				gamestate = new GameState(N);
-				if (debug)
-					System.out.println("MATCHSTART");
+				// if (debug)
+					// System.out.println("MATCHSTART");
 			}
 				break;
 			case GAMEEND: {
 				gamestate.game++;
-				if (debug)
-					System.out.println("GAMEEND");
+				// if (debug)
+					// System.out.println("GAMEEND");
 			}
 			break;
 			case GAMESTART:

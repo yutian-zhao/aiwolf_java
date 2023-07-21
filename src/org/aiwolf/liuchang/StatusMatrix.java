@@ -92,11 +92,15 @@ public class StatusMatrix {
             // this is the first vote result
             if (preFirstVoteList.size()==0){
                 for (Vote v : currentGameInfo.getVoteList()) {
-                    dailyMatrix[2][v.getAgent().getAgentIdx()-1][v.getTarget().getAgentIdx()-1] = 1; 
+                    if (v.getAgent().getAgentIdx()>0 && v.getTarget().getAgentIdx()>0){
+                        dailyMatrix[2][v.getAgent().getAgentIdx()-1][v.getTarget().getAgentIdx()-1] = 1;
+                    }
                 }
             } else {
                 for (Vote v : preFirstVoteList) {
-                    dailyMatrix[2][v.getAgent().getAgentIdx()-1][v.getTarget().getAgentIdx()-1] = 1; 
+                    if (v.getAgent().getAgentIdx()>0 && v.getTarget().getAgentIdx()>0){
+                        dailyMatrix[2][v.getAgent().getAgentIdx()-1][v.getTarget().getAgentIdx()-1] = 1;
+                    } 
                 }
                 preFirstVoteList = new ArrayList<Vote>();
             }
@@ -113,7 +117,7 @@ public class StatusMatrix {
             } else if (myRole == Role.MEDIUM){
                 skillResult = currentGameInfo.getMediumResult();
             } 
-            if (skillResult != null) {
+            if (skillResult != null && skillResult.getTarget().getAgentIdx()>0) {
                 if (skillResult.getResult() == Species.HUMAN){
                     Arrays.fill(dailyMatrix[3][skillResult.getTarget().getAgentIdx()-1], 1);
                 } else {
@@ -142,11 +146,11 @@ public class StatusMatrix {
 				content = replaceSubject(content, talker);
 			}
 
-			try{
+			try {
                 parseSentence(content, talker, true);
             } catch (Exception e) {
-                System.out.println(talk.getText());
-                e.printStackTrace();
+                System.out.println("YUTIAN "+talk.getText());
+                System.out.println(e);
             }
 
 		}

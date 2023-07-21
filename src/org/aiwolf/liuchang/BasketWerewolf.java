@@ -168,7 +168,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 				if (currentGameInfo.getLastDeadAgentList().isEmpty()) { //死亡者がいないならば
 					guarded[currentGameInfo.getAttackedAgent().getAgentIdx() - 1] = true; //襲撃対象を記録
 					alive_bodyguard = true;
-					System.out.println("guarded " + currentGameInfo.getAttackedAgent().toString());
+					// System.out.println("guarded " + currentGameInfo.getAttackedAgent().toString());
 				}
 			}
 		}
@@ -180,7 +180,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 
 		sh.process(params, gamedata); //StateHolderの中でgamedataに追加された部分(すぐ上で追加したVoteStartの情報)を読み込み、RolePredictionのやり直し(recalc)、新しいassignnmentを設定(search)
 		sh2.process(params, gamedata);
-		//System.out.println("alive = " + currentGameInfo.getAliveAgentList().size());
+		//// System.out.println("alive = " + currentGameInfo.getAliveAgentList().size());
 
 		double mn = -1;
 		int c = 0;
@@ -200,7 +200,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 				}
 			} else { //投票がその日2回目以降なら(決選投票)
 				c = -1;
-				System.out.println("PP"); //PP盤面になっていることを確認
+				// System.out.println("PP"); //PP盤面になっていることを確認
 				for (int i = 0; i < numAgents; i++) { //すべてのプレイヤーの中で
 					if (i != meint) { //自分以外で
 						if (sh.gamestate.agents[i].Alive) { //生きているなら
@@ -332,7 +332,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 		updateState(sh2);
 
 		if (update_sh) { //updateする必要があるなら
-			System.out.println("SEARCH");
+			// System.out.println("SEARCH");
 			update_sh = false;
 			sh.serach(1000); //新しく1000個のassignmentを作る
 			sh2.serach(1000);
@@ -344,7 +344,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 			
 			//大河内追加。3CO回避(talk turnの順番による。少なくとも、味方の人狼と被るのは回避)
 			if (!check_nakamaseer) {
-				System.out.println("--------seer check---------");
+				// System.out.println("--------seer check---------");
 				check_nakamaseer = true;
 				boolean nakamaseer = false;
 				int num_seer = 0;
@@ -358,7 +358,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 				}
 				if ((num_seer >= 2) || nakamaseer) { //すでに2COされているか、仲間がCOしている場合、占い師COをやめる
 					seer = false;
-					System.out.println("-------stop CO seer--------");
+					// System.out.println("-------stop CO seer--------");
 					lastTalkTurn = -1;
 					return chooseTalk();
 				}
@@ -526,7 +526,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 		/*====================================*/
 		
 		
-		//System.out.println(day + " " +  sh.gamestate.turn);
+		//// System.out.println(day + " " +  sh.gamestate.turn);
 		if (numAgents == 5) { //5人村で
 			if (gamecount >= 50) { //50試合目以降で
 				if (day == 1 && sh.gamestate.turn == 1) { //初日の最初のターンなら
@@ -555,7 +555,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 					}
 					if (alive > 0.5 * all) { //生きているプレイヤーの狂人の可能性の合計がすべてのプレイヤーの狂人の可能性の合計の半分以上であれば(5人村で2人死亡した状況のため、死亡した2人と自分以外に生き残っている2人の狂人の可能性を比べていることになる) NOTE:PPに走る基準が緩すぎるかも
 						kyoujin_ikiteru = true; //狂人が生きていると判断
-						System.out.println("kyojin");
+						// System.out.println("kyojin");
 						return (new Content(new ComingoutContentBuilder(me, Role.WEREWOLF))).getText(); //人狼COする
 					}
 				} else { //15人村なら
@@ -575,7 +575,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 				}
 			} else if (kyoujin_ikiteru) { //狂人が生きているかどうかを判断済みで、かつ狂人が生きていると思われるなら
 				if (numAgents == 0) { //TODO:これはミスか？
-					System.out.println("kyojin");
+					// System.out.println("kyojin");
 					mn = -1;
 					for (int i = 0; i < numAgents; i++)
 						if (i != meint)
@@ -608,9 +608,9 @@ public class BasketWerewolf extends BasketBasePlayer {
 		if (numAgents == 15) { //15人村で
 			if (sh.gamestate.cnt_vote(meint) >= co_count) { //ヘイトが集まっていて
 				
-				System.out.println("comingout. meint = " + meint + " " + sh.gamestate.cnt_vote(meint) + " players will vote to me"); //debug
+				// System.out.println("comingout. meint = " + meint + " " + sh.gamestate.cnt_vote(meint) + " players will vote to me"); //debug
 				for (int i = 0; i < numAgents; i++) {
-					System.out.print(i + " will vote " + sh.gamestate.agents[i].will_vote + " ");
+					// System.out.print(i + " will vote " + sh.gamestate.agents[i].will_vote + " ");
 				}
 				
 				if (!doCO) { //まだCOしていないなら,狩人や霊媒師としてCOする。COの処理は別に書いてある。
@@ -626,9 +626,9 @@ public class BasketWerewolf extends BasketBasePlayer {
 		
 		
 		for (int i = 0; i < numAgents; i++) {
-			System.out.print(getPred(i, Util.WEREWOLF) + " "); //村視点、各プレイヤーの人狼の可能性を出力しておく(発言ではない)
+			// System.out.print(getPred(i, Util.WEREWOLF) + " "); //村視点、各プレイヤーの人狼の可能性を出力しておく(発言ではない)
 		}
-		System.out.println();
+		// System.out.println();
 		if (numAgents == 5) { //5人村なら
 			c = -1;
 			mn = -1;
@@ -707,7 +707,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 				}
 				if (taikou.size() >= 1)
 					c = taikou.get(1).get(0).intValue(); // get the second best like CO
-					System.out.println("--------taikou---------\n" + taikou);
+					// System.out.println("--------taikou---------\n" + taikou);
 			}
 			//ここまで
 			/*==================================*/
@@ -743,7 +743,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 
 		}
 
-		System.out.println("willvote " + (c + 1) + " " + mn); //投票先として出力する(まだ発言はしていない)
+		// System.out.println("willvote " + (c + 1) + " " + mn); //投票先として出力する(まだ発言はしていない)
 		if (numAgents == 5) { //5人村なら
 			if (sh.gamestate.cnt_vote(meint) * 2 >= currentGameInfo.getAliveAgentList().size()) { //自分の得票数が半数以上(吊られそう)ならば
 				before = -1; //まずい状況だというフラグを立てておく
@@ -831,7 +831,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 					if (sh.gamestate.agents[i].Alive) { //生きているなら
 						double score = 1 - getPred(i, Util.POSSESSED); //狂人の確率を取ってきて大小を反転し(scoreが高いほうが狂人の可能性が低い)
 						score += 0.2 * getPred(i, Util.SEER); //占い師の確率×0.2を足す
-						score += 0.1 * getPred(i, Util.BODYGUARD); //狩人の確率×0.1を足す
+						// score += 0.1 * getPred(i, Util.BODYGUARD); //狩人の確率×0.1を足す
 						score += 0.1 * getPred(i, Util.MEDIUM); //霊媒師の確率×0.1を足す
 						score += 3 * wincnt[i] / (gamecount + 0.01); //勝率×3を足す
 						if (agents[i].COrole == Role.SEER) //占い師COしているプレイヤーは
@@ -857,7 +857,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 				}
 			}
 			c = votelist.get(0).get(0).intValue();
-			System.out.println("votelist: "+votelist);
+			// System.out.println("votelist: "+votelist);
 		}
 		if ((yesterday - currentGameInfo.getAliveAgentList().size()) >= 2)
 			if (seervote >= 0)
@@ -927,7 +927,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 						if (sh.gamestate.agents[i].Alive) { //生きているなら
 							double score = 1 - getPred(i, Util.POSSESSED); //狂人の確率を取ってきて大小を反転し(scoreが高いほうが狂人の可能性が低い)
 							score += 0.2 * getPred(i, Util.SEER); //占い師の確率×0.2を足す
-							score += 0.1 * getPred(i, Util.BODYGUARD); //狩人の確率×0.1を足す
+							// score += 0.1 * getPred(i, Util.BODYGUARD); //狩人の確率×0.1を足す
 							score += 0.1 * getPred(i, Util.MEDIUM); //霊媒師の確率×0.1を足す
 							score += 3 * wincnt[i] / (gamecount + 0.01); //勝率×3を足す
 							if (agents[i].COrole == Role.SEER) //占い師COしているプレイヤーは
@@ -952,7 +952,7 @@ public class BasketWerewolf extends BasketBasePlayer {
 						}
 					}
 				}
-				System.out.println("votelist: "+votelist);
+				// System.out.println("votelist: "+votelist);
 				c = votelist.get(0).get(0).intValue();
 				
 				if ((yesterday - currentGameInfo.getAliveAgentList().size()) >= 2)

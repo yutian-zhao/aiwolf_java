@@ -74,7 +74,7 @@ public class BasketVillager extends BasketBasePlayer {
 		}
 
 		sh.process(params, gamedata);
-		System.out.println("GAMETURN = " + lastTurn + " " + sh.gamestate.turn);
+		// System.out.println("GAMETURN = " + lastTurn + " " + sh.gamestate.turn);
 
 		lastTalkTurn = lastTurn;
 
@@ -149,7 +149,7 @@ public class BasketVillager extends BasketBasePlayer {
 				c = chooseMostLikelyWerewolf();
 			}
 		}
-		System.out.println("willvote " + (c + 1) + " " + mn);
+		// System.out.println("willvote " + (c + 1) + " " + mn);
 
 		if (sh.gamestate.cnt_vote(meint) * 2 >= currentGameInfo.getAliveAgentList().size()) {
 			before = -1;

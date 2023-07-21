@@ -74,7 +74,7 @@ public class BasketBodyguard extends BasketVillager {
 
 		updateState(sh);
 		if (update_sh) {
-			System.out.println("SEARCH");
+			// System.out.println("SEARCH");
 			update_sh = false;
 			sh.serach(1000);
 		}

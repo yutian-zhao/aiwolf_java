@@ -127,15 +127,15 @@ public class BasketPossessed extends BasketBasePlayer {
 		sh.process(params, gamedata);
 		//System.out.println("alive = " + currentGameInfo.getAliveAgentList().size());
 
-		for (int i = 0; i < numAgents; i++) {
-			System.out.print(getPred(i, Util.WEREWOLF) + " ");
-		}
-		System.out.println();
+		// for (int i = 0; i < numAgents; i++) {
+		// 	System.out.print(getPred(i, Util.WEREWOLF) + " ");
+		// }
+		// System.out.println();
 
-		for (int i = 0; i < numAgents; i++) {
-			System.out.print(getPred(i, Util.SEER) + " ");
-		}
-		System.out.println();
+		// for (int i = 0; i < numAgents; i++) {
+		// 	System.out.print(getPred(i, Util.SEER) + " ");
+		// }
+		// System.out.println();
 
 		double mn = -1;
 		int c = 0;
@@ -210,7 +210,7 @@ public class BasketPossessed extends BasketBasePlayer {
 		updateState(sh);
 		updateState(sh2);
 		if (update_sh) {
-			System.out.println("SEARCH");
+			// System.out.println("SEARCH");
 			update_sh = false;
 			sh.serach(1000);
 			sh2.serach(1000);
@@ -435,7 +435,7 @@ public class BasketPossessed extends BasketBasePlayer {
 				}
 			}
 		}
-		System.out.println("willvote " + (c + 1));
+		// System.out.println("willvote " + (c + 1));
 		// 最も人狼っぽい怪しい人に対して、その人に投票する旨の発言
 		if (before != c && target != c) {
 			if (!isValidIdx(c)) {return null;}
