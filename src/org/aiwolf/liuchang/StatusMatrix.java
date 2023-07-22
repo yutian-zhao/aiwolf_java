@@ -26,7 +26,7 @@ public class StatusMatrix {
     int channels = 8;
     // int?
     List<int[][][]> matrixList = new ArrayList<int[][][]>();
-    int day = -1;
+    int day = 0;
     int talkListHead = 0;
     int[][][] dailyMatrix;
     GameInfo currentGameInfo;
@@ -110,6 +110,14 @@ public class StatusMatrix {
                 Arrays.fill(dailyMatrix[0][entry.getKey().getAgentIdx()-1], roleint.get(entry.getValue()));
             }
 
+            // alive (daystart and NOT after voting)
+            for (int i = 0; i < dim; i++)
+                Arrays.fill(dailyMatrix[1][i], 0);
+            for (Agent a : currentGameInfo.getAliveAgentList()) {
+                int id = a.getAgentIdx() - 1;
+                Arrays.fill(dailyMatrix[1][id], 1);
+            }
+
             // Skill
             Judge skillResult = null;
             if (myRole == Role.SEER){
@@ -126,13 +134,6 @@ public class StatusMatrix {
             }
         }
         
-		// alive (daystart and after voting)
-		for (int i = 0; i < dim; i++)
-			Arrays.fill(dailyMatrix[1][i], 0);
-		for (Agent a : currentGameInfo.getAliveAgentList()) {
-			int id = a.getAgentIdx() - 1;
-			Arrays.fill(dailyMatrix[1][id], 1);
-		}
 
 		//行動(発言)の解析
 		for (int i = talkListHead; i < currentGameInfo.getTalkList().size(); i++) {
@@ -190,13 +191,21 @@ public class StatusMatrix {
             break;
 		case COMINGOUT:
             if (content.getSubject() == talker){
-                Role coRole = content.getRole();
-                if (roleint.get(coRole)!=null){
-                    int coResult = roleint.get(coRole);
-                    int[] ta = new int[]{italker, 1};
-                    target_attitude.add(ta);
-                    if (update){
-                        Arrays.fill(dailyMatrix[4][italker], coResult);
+                target = content.getTarget();
+                if (target!=null && target.getAgentIdx()>0){
+                    int itarget = target.getAgentIdx()-1;
+                    Role coRole = content.getRole();
+                    if (roleint.get(coRole)!=null){
+                        int coResult = roleint.get(coRole);
+                        int attitude = -1;
+                        if (coRole.getSpecies()==Species.HUMAN){
+                            attitude = 1;
+                        }
+                        int[] ta = new int[]{itarget, attitude};
+                        target_attitude.add(ta);
+                        if (update){
+                            Arrays.fill(dailyMatrix[4][itarget], coResult);
+                        }
                     }
                 }
             }

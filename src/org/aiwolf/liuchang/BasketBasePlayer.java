@@ -45,7 +45,7 @@ public class BasketBasePlayer implements Player {
 	// static FileHandler fh;
 	// static SimpleFormatter formatter = new SimpleFormatter();
 	int votingDay;
-	boolean debugLog = false;
+	// boolean debugLog = false;
 	boolean debugPred = true;
 	float[][] onnxPred;
 	Map<String, Integer> roleStringInt = Map.of(
@@ -274,7 +274,7 @@ public class BasketBasePlayer implements Player {
 			// }
 
 			try {
-				InputStream model_is = getClass().getResourceAsStream("CNNLSTM_0722054515.onnx");
+				InputStream model_is = getClass().getResourceAsStream("CNNLSTM_0722172447.onnx");
 				byte[] model_bytes = model_is.readAllBytes();
 				session = env.createSession(model_bytes, new OrtSession.SessionOptions());
 			} catch (Exception e) {
@@ -390,7 +390,9 @@ public class BasketBasePlayer implements Player {
 		
 		// yutian
 		try {
-			sm.update(currentGameInfo);
+			if (currentGameInfo.getDay() > 0){
+				sm.update(currentGameInfo);
+			} 
 		} catch (Exception e){
 			System.out.println(e);
 		}
@@ -742,11 +744,29 @@ public class BasketBasePlayer implements Player {
 			}
 
 			// yutian
-			int[] trueRole = new int[numAgents];
-			for (int i = 0; i < trueRole.length; i++) {
-				trueRole[i] = sm.roleint.get(agents[i].role);
+			if (debugPred) {
+				int[] trueRole = new int[numAgents];
+				for (int i = 0; i < trueRole.length; i++) {
+					trueRole[i] = sm.roleint.get(agents[i].role);
+				}
+				float[][][][][] sourceArray = new float[1][sm.matrixList.size()][sm.matrixList.get(0).length][sm.matrixList.get(0)[0].length][sm.matrixList.get(0)[0].length];
+				for (int i = 0; i < sourceArray.length; i++){
+					for (int j = 0; j < sourceArray[0].length; j++){
+						for (int k = 0; k < sourceArray[0][0].length; k++){
+							for (int m = 0; m < sourceArray[0][0][0].length; m++){
+								for (int n = 0; n < sourceArray[0][0][0][0].length; n++){
+									sourceArray[i][j][k][m][n] = sm.matrixList.get(j)[k][m][n];
+								}
+							}
+						}
+					}
+				}
+				System.out.println("YUTIAN status matrix: "+Arrays.deepToString(sourceArray));
+				System.out.println("YUTIAN sm length: "+sm.matrixList.size());
+				System.out.println("YUTIAN finish day: "+currentGameInfo.getDay());
+				System.out.println("YUTIAN result: "+Arrays.toString(trueRole));
 			}
-			System.out.println("YUTIAN result: "+Arrays.toString(trueRole));
+			
 
 			if (werewolfWins) {
 				ww++;
