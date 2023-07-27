@@ -24,7 +24,6 @@ import java.util.Map;
 public class StatusMatrix {
     int dim = 15;
     int channels = 8;
-    // int?
     List<int[][][]> matrixList = new ArrayList<int[][][]>();
     int day = 0;
     int talkListHead = 0;
@@ -51,7 +50,7 @@ public class StatusMatrix {
     }
 
     public static void zeroData(int[][][] data) {
-        // Zero the array
+        // Zero out the array
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[i].length; j++) {
                 Arrays.fill(data[i][j], 0);
@@ -71,12 +70,10 @@ public class StatusMatrix {
 	}
 
     public void update(GameInfo gameInfo) {
+        // updata status matrix
 		currentGameInfo = gameInfo;
         Role myRole = currentGameInfo.getRole();
         
-		// id, alive, comeout, vote, [specific], estimate, divine, identified, declare, [attitude]
-        // daystart
-        // vote
         // if (day == 0 && matrixList.size()==0){
         //     zeroData(dailyMatrix);
         //     matrixList.add(dailyMatrix);
@@ -87,6 +84,7 @@ public class StatusMatrix {
             zeroData(dailyMatrix);
             matrixList.add(dailyMatrix);
             talkListHead = 0;
+            // vote
             // getLatestVoteList -> getVoteList
             // List<Vote> votelist = currentGameInfo.getVoteList();
             // this is the first vote result
@@ -118,7 +116,7 @@ public class StatusMatrix {
                 Arrays.fill(dailyMatrix[1][id], 1);
             }
 
-            // Skill
+            // skill
             Judge skillResult = null;
             if (myRole == Role.SEER){
                 skillResult = currentGameInfo.getDivineResult();

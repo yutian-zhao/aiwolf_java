@@ -46,8 +46,8 @@ public class BasketBasePlayer implements Player {
 	// static SimpleFormatter formatter = new SimpleFormatter();
 	int votingDay;
 	// boolean debugLog = false;
-	boolean debugPred = true;
-	float[][] onnxPred;
+	boolean debugPred = true; // whether print out debug information
+	float[][] onnxPred; // record predicted probabilities for each role
 	Map<String, Integer> roleStringInt = Map.of(
         "VILLAGER", 1,
         "SEER", 2,
@@ -568,6 +568,7 @@ public class BasketBasePlayer implements Player {
 
 			addExecutedAgent(currentGameInfo.getExecutedAgent()); //追放者を取得
 			// yutian
+			// for debug: print out the executed player on the previous day
 			if (debugPred && currentGameInfo.getExecutedAgent() != null) {
 				System.out.println("YUTIAN Executed before day " + currentGameInfo.getDay()+ " is " + currentGameInfo.getExecutedAgent().getAgentIdx() + "(need -1)");
 			}
@@ -661,6 +662,7 @@ public class BasketBasePlayer implements Player {
 
 	public Agent vote() {
 		// yutian
+		// records the first vote list if revote happens
 		if (votingDay != 0 && votingDay == currentGameInfo.getDay()) {
 			// latest votelist exits only when revote happens
 			sm.preFirstVoteList = currentGameInfo.getLatestVoteList();
@@ -744,6 +746,7 @@ public class BasketBasePlayer implements Player {
 			}
 
 			// yutian
+			// for debug: print out prediction matrix and game results.
 			if (debugPred) {
 				int[] trueRole = new int[numAgents];
 				for (int i = 0; i < trueRole.length; i++) {
