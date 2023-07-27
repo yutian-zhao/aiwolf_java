@@ -1,13 +1,23 @@
+/**
+ * 
+ */
 package org.aiwolf.liuchang;
 
+/**
+ * @author liuch
+ *
+ */
 public class Params {
-	double value;
+
 	double defo;
+	double diff;
 	double mn;
 	double mx;
+	double value;
+	
 	String name;
+	
 	boolean valid = true;
-	double diff;
 
 	Params(double initial, double _mn, double _mx, String _name, double _diff) {
 		defo = initial;
@@ -17,5 +27,5 @@ public class Params {
 		name = _name;
 		diff = _diff;
 	}
-
+	
 }

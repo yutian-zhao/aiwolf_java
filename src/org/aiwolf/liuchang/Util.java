@@ -1,12 +1,18 @@
+/**
+ * 
+ */
 package org.aiwolf.liuchang;
 
 import java.util.HashMap;
 
+/**
+ * @author liuch
+ *
+ */
 public class Util {
+
 	static HashMap<String, Integer> role_string_to_int = new HashMap<String, Integer>();
 	static String[] role_int_to_string = new String[6];
-	static int[] roles05 = new int[4];
-	static int[] roles15 = new int[6];
 	static final int WEREWOLF = 0;
 	static final int VILLAGER = 1;
 	static final int SEER = 2;
@@ -16,6 +22,8 @@ public class Util {
 	static int[] humans05 = new int[2];
 	static int[] humans15 = new int[4];
 	static int[] nothumans = new int[2];
+	static int[] roles05 = new int[4];
+	static int[] roles15 = new int[6];
 
 	Util() {
 
@@ -36,9 +44,11 @@ public class Util {
 		role_int_to_string[3] = "POSSESSED";
 		role_int_to_string[4] = "MEDIUM";
 		role_int_to_string[5] = "BODYGUARD";
+		
 		for (int i = 0; i < 6; i++) {
 			role_string_to_int.put(role_int_to_string[i], i);
 		}
+		
 		roles05[0] = 0;
 		roles05[1] = 1;
 		roles05[2] = 2;
@@ -59,4 +69,5 @@ public class Util {
 	static double nlog(double a) {
 		return -Math.log(Math.max(1e-4, a));
 	}
+	
 }

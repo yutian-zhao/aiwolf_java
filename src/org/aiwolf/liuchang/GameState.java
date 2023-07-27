@@ -1,14 +1,26 @@
+/**
+ * 
+ */
 package org.aiwolf.liuchang;
 
+/**
+ * @author liuch
+ *
+ */
 public class GameState {
-	int game = 0;
+	
 	int day = 0;
-	int turn = 0;
-	AgentStatus[] agents;
-	int N;
+	int game = 0;
 	int me;
-	int w;
-
+	int N;
+	int turn = 0;
+	
+	AgentStatus[] agents;
+	
+	GameState() {
+		
+	}
+	
 	void game_init(int _N) {
 		day = 0;
 		turn = 0;
@@ -16,7 +28,7 @@ public class GameState {
 			agents[i].game_init();
 		}
 	}
-
+	
 	void day_init(int _N) {
 		turn = 0;
 		for (int i = 0; i < N; i++) {
@@ -41,4 +53,5 @@ public class GameState {
 			agents[i] = new AgentStatus();
 		}
 	}
+
 }

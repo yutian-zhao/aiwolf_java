@@ -1,10 +1,20 @@
+/**
+ * 
+ */
 package org.aiwolf.liuchang;
 
+/**
+ * @author liuch
+ *
+ */
 public class GameData {
+
 	DataType type;
+	
 	int day;
-	int talker;
 	int object;
+	int talker;
+	
 	boolean white;
 
 	GameData(DataType _type, int _day, int _talker, int _object, boolean _white) {
@@ -14,4 +24,5 @@ public class GameData {
 		object = _object;
 		white = _white;
 	}
+	
 }

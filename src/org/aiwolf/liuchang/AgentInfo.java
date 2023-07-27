@@ -1,22 +1,31 @@
+/**
+ * 
+ */
 package org.aiwolf.liuchang;
 
 import org.aiwolf.common.data.Role;
 
-// インターフェースっぽいところなので気にしなくてよさそう
-//agents[]として用いられているのはこちら(sh.gamestate.agents[]とは異なる)
+/**
+ * @author liuch
+ *
+ */
 public class AgentInfo {
-	boolean alive;
+
 	int index;
-	Role role;
-	Role COrole = null;
+	int NvotedBy;
 	int state;
 	int voteFor;
-	int NvotedBy;
 	int wincnt;
-
+	
+	boolean alive;
+	
+	Role role;
+	Role COrole = null;
+	
 	AgentInfo() {
 		state = -1;
 		alive = true;
 		wincnt = 0;
 	}
+	
 }
