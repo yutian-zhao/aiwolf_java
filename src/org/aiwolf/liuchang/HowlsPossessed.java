@@ -28,7 +28,7 @@ import org.aiwolf.common.net.GameSetting;
 /**
  * 狂人役エージェントクラス
  */
-public class BasketPossessed extends BasketBasePlayer {
+public class HowlsPossessed extends HowlsBasePlayer {
 
 	// パラメータたち
 	Deque<Judge> divinationQueue = new LinkedList<>();

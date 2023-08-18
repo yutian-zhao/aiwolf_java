@@ -18,7 +18,7 @@ import org.aiwolf.common.net.GameSetting;
 /**
  * 狩人役エージェントクラス
  */
-public class BasketBodyguard extends BasketVillager {
+public class HowlsBodyguard extends HowlsVillager {
 
 	Agent guardedAgent;
 	boolean doCO = false;	//市田追加

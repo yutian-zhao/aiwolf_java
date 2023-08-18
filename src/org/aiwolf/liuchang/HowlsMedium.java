@@ -20,7 +20,7 @@ import org.aiwolf.common.net.GameSetting;
  * 霊媒師役エージェントクラス
  */
 
-public class BasketMedium extends BasketBasePlayer {
+public class HowlsMedium extends HowlsBasePlayer {
 	Judge ident;
 
 	int before = -1;

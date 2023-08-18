@@ -17,7 +17,7 @@ import org.aiwolf.common.net.GameSetting;
 
 
 /** 村人役エージェントクラス　＋　五十嵐 doFO 追加 */
-public class BasketVillager extends BasketBasePlayer {
+public class HowlsVillager extends HowlsBasePlayer {
 
 	boolean f = true;
 	Parameters params;

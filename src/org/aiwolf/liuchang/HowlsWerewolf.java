@@ -21,7 +21,7 @@ import org.aiwolf.common.net.GameSetting;
 /**
  * 人狼役エージェントクラス
  */
-public class BasketWerewolf extends BasketBasePlayer {
+public class HowlsWerewolf extends HowlsBasePlayer {
 	
 	
 	/*====================================*/
