@@ -1,19 +1,29 @@
+/**
+ * 
+ */
 package org.aiwolf.liuchang;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * @author liuch
+ *
+ */
 public class Assignment {
-	Random rnd = new Random();
-	List<Integer> assignment = new ArrayList<Integer>();
-	double score = 0;
-
-	Assignment() {
-	}
 
 	int N;
-
+	
+	double score = 0;
+	
+	List<Integer> assignment = new ArrayList<Integer>();
+	Random rnd = new Random();
+	
+	Assignment() {
+		
+	}
+	
 	Assignment(int _N, ArrayList<Integer> fixed_list, int role) {
 		N = _N;
 		boolean[] isfixed = new boolean[N];
@@ -30,14 +40,17 @@ public class Assignment {
 			assignment.add(Util.SEER);
 			assignment.add(Util.WEREWOLF);
 			assignment.add(Util.POSSESSED);
-		} else {
-			for (int i = 0; i < 8; i++)
+		}
+		else {
+			for (int i = 0; i < 8; i++) {
 				assignment.add(Util.VILLAGER);
+			}
 			assignment.add(Util.SEER);
 			assignment.add(Util.MEDIUM);
 			assignment.add(Util.BODYGUARD);
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < 3; i++) {
 				assignment.add(Util.WEREWOLF);
+			}
 			assignment.add(Util.POSSESSED);
 		}
 		List<Integer> extra = new ArrayList<Integer>();
@@ -47,21 +60,18 @@ public class Assignment {
 				assignment.set(i, role);
 			}
 		}
-		{
-			int cur = 0;
-			for (int i = 0; i < N; i++) {
-				if (cur >= extra.size())
-					break;
-				if (!isfixed[i] && assignment.get(i) == role) {
-
-					assignment.set(i, extra.get(cur));
-					cur++;
-				}
+		int cur = 0;
+		for (int i = 0; i < N; i++) {
+			if (cur >= extra.size()) {
+				break;
+			}
+			if (!isfixed[i] && assignment.get(i) == role) {
+				assignment.set(i, extra.get(cur));
+				cur++;
 			}
 		}
-
 	}
-
+	
 	Assignment returncopy() {
 		Assignment res = new Assignment();
 		res.copyfrom(this);
@@ -82,8 +92,9 @@ public class Assignment {
 		while (true) {
 			i = notfixed.get(rnd.nextInt(notfixed.size()));
 			j = notfixed.get(rnd.nextInt(notfixed.size()));
-			if (assignment.get(i) != assignment.get(j))
+			if (assignment.get(i) != assignment.get(j)) {
 				break;
+			}
 		}
 		int t = assignment.get(i);
 		assignment.set(i, assignment.get(j));
@@ -108,4 +119,5 @@ public class Assignment {
 
 		return res;
 	}
+	
 }

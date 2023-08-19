@@ -1,7 +1,14 @@
+/**
+ * 
+ */
 package org.aiwolf.liuchang;
 
 import org.aiwolf.sample.lib.AbstractRoleAssignPlayer;
 
+/**
+ * @author liuch
+ *
+ */
 public class HowlsRoleAssignPlayer extends AbstractRoleAssignPlayer {
 
 	public HowlsRoleAssignPlayer() {
@@ -11,10 +18,11 @@ public class HowlsRoleAssignPlayer extends AbstractRoleAssignPlayer {
 		setSeerPlayer(new HowlsSeer());
 		setPossessedPlayer(new HowlsPossessed());
 		setWerewolfPlayer(new HowlsWerewolf());
-	} 
-
+	}
 	@Override
 	public String getName() {
-		return "Howls";
+		// TODO Auto-generated method stub
+		return null;
 	}
+
 }

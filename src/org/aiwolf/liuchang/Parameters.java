@@ -1,10 +1,18 @@
+/**
+ * 
+ */
 package org.aiwolf.liuchang;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * @author liuch
+ *
+ */
 public class Parameters {
+
 	List<Params> params = new ArrayList<Params>();
 	Params werewolf_co_rate;
 	Params possessed_co_rate;
@@ -21,7 +29,8 @@ public class Parameters {
 			possessed_divined_black = new Params(0.5, 0, 1, "possessed_divined_black", 0.3);
 			trust = new Params(0.6, 0, 1, "trust", 0.3);
 			werewolf_taben = new Params(0.0, -1, 1, "werewolf_taben", 0.3);
-		} else {
+		}
+		else {
 			werewolf_co_rate = new Params(0.3, 0, 1, "werewolf_co_rate", 0.3);
 			possessed_co_rate = new Params(0.9, 0, 1, "possessed_co_rate", 0.3);
 			werewolf_divined_black = new Params(0.5, 0, 1, "werewolf_divined_black", 0.3);
@@ -31,8 +40,6 @@ public class Parameters {
 		}
 		params.add(werewolf_co_rate);
 		params.add(possessed_co_rate);
-		//params.add(werewolf_divined_black);
-		//params.add(possessed_divined_black);
 		params.add(trust);
 		params.add(werewolf_taben);
 	}
@@ -60,4 +67,5 @@ public class Parameters {
 			System.out.println(params.get(i).name + ": " + params.get(i).value);
 		}
 	}
+	
 }
