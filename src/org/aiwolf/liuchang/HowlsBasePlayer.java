@@ -275,7 +275,7 @@ public class HowlsBasePlayer implements Player {
 			// }
 
 			try {
-				InputStream model_is = getClass().getResourceAsStream("CNNLSTM_0818134626.onnx");
+				InputStream model_is = getClass().getResourceAsStream("CNNLSTM_0819191143.onnx");
 				byte[] model_bytes = model_is.readAllBytes();
 				session = env.createSession(model_bytes, new OrtSession.SessionOptions());
 			} catch (Exception e) {
@@ -619,6 +619,7 @@ public class HowlsBasePlayer implements Player {
 		return Talk.SKIP;
 	}
 
+	// yutian
 	public float[][] predict(StatusMatrix sm, OrtEnvironment env, OrtSession session){
 		float[][][][][] sourceArray = new float[1][sm.matrixList.size()][sm.matrixList.get(0).length][sm.matrixList.get(0)[0].length][sm.matrixList.get(0)[0].length];
 		for (int i = 0; i < sourceArray.length; i++){
